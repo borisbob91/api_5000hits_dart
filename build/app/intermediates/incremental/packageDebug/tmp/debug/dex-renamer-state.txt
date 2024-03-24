@@ -1,4 +1,0 @@
-#Sun Mar 24 00:09:05 GMT 2024
-base.0=/home/borisbob/StudioProjects/api_5000hits_dart/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
