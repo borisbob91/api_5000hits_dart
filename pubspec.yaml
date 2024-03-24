@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   api_5000hits:
-    path: packages/api_5000hits
+      path: packages/api_5000hits
   dio: ^5.4.1
 
 
