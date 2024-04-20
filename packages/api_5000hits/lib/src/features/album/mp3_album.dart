@@ -3,10 +3,10 @@
 //     final albumEntity = albumEntityFromJson(jsonString);
 
 import 'dart:convert';
-import '../features/album/mp3_album.dart';
 
+part 'mp3_cover.dart';
 
-class BaseMp3Album {
+class Mp3Album {
   int? id;
   String? slug;
   String? artist;
@@ -28,7 +28,7 @@ class BaseMp3Album {
   int? dislikes;
   String? trackList;
 
-  BaseMp3Album({
+  Mp3Album({
     this.id,
     this.slug,
     this.artist,
@@ -51,7 +51,7 @@ class BaseMp3Album {
     this.trackList,
   });
 
-  BaseMp3Album copyWith({
+  Mp3Album copyWith({
     int? id,
     String? slug,
     String? artist,
@@ -73,7 +73,7 @@ class BaseMp3Album {
     int? dislikes,
     String? trackList,
   }) =>
-      BaseMp3Album(
+      Mp3Album(
         id: id ?? this.id,
         slug: slug ?? this.slug,
         artist: artist ?? this.artist,
@@ -96,12 +96,12 @@ class BaseMp3Album {
         trackList: trackList ?? this.trackList,
       );
 
-  factory BaseMp3Album.fromRawJson(String str) =>
-      BaseMp3Album.fromJson(json.decode(str));
+  factory Mp3Album.fromRawJson(String str) =>
+      Mp3Album.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory BaseMp3Album.fromJson(Map<String, dynamic> json) => BaseMp3Album(
+  factory Mp3Album.fromJson(Map<String, dynamic> json) => Mp3Album(
     id: json["id"],
     slug: json["slug"],
     artist: json["artist"],

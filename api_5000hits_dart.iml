@@ -9,6 +9,12 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/api_5000hits/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/packages/api_5000hits/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/packages/api_5000hits/build" />
+      <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral/.plugin_symlinks/isar_flutter_libs/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral/.plugin_symlinks/isar_flutter_libs/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral/.plugin_symlinks/isar_flutter_libs/build" />
+      <excludeFolder url="file://$MODULE_DIR$/windows/flutter/ephemeral/.plugin_symlinks/isar_flutter_libs/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/windows/flutter/ephemeral/.plugin_symlinks/isar_flutter_libs/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/windows/flutter/ephemeral/.plugin_symlinks/isar_flutter_libs/build" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />

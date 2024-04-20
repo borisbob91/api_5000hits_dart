@@ -7,7 +7,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
    MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -64,10 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(onPressed: () {
         _incrementCounter();
       },
-      child: Icon(Icons.add) ,),
+      child: const Icon(Icons.add) ,),
       body: Center(
         child: isLoading==true? const CircularProgressIndicator() : albums.isNotEmpty ? ListView.builder(
-          physics: BouncingScrollPhysics() ,
+          physics: const BouncingScrollPhysics() ,
                 itemCount: albums.length,
                 itemBuilder:(BuildContext context, int index){
                    Map<String, dynamic> album = albums[index];

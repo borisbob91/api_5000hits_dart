@@ -1,4 +1,4 @@
-part of "mp3_album_repository.dart";
+part of 'mp3_album_repository.dart';
 
 abstract class Mp3AlbumRepositoryInterface {
   Future<List<Mp3Album>> fetchAlbums();

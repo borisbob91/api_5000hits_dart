@@ -1,42 +1,47 @@
 // To parse this JSON data, do
 //
-//     final albumEntity = albumEntityFromJson(jsonString);
+//     final Mp3Music = Mp3MusicFromJson(jsonString);
 
 import 'dart:convert';
 
-part "mp3_cover.dart";
+import 'package:api_5000hits/src/features/album/mp3_album.dart';
+import 'package:api_5000hits/src/features/lyric/mp3_lyric.dart';
+import 'package:api_5000hits/src/features/video/mp3_video.dart';
 
-class Mp3Album {
+
+
+class Mp3Music {
   int? id;
   String? slug;
   String? artist;
-  String? name;
+  String? title;
+  String? album;
   String? genre;
+  String? track;
   String? year;
   String? duration;
-  int? tracksNb;
-  String? label;
+  String? bitrate;
+  dynamic label;
   Mp3Cover? cover;
   String? filesize;
   int? hits;
   int? country;
   DateTime? uploaded;
-  int? uploader;
-  int? visible;
-  String? otherInfos;
-  int? likes;
-  int? dislikes;
-  String? trackList;
+  String? uploader;
+  Mp3Lyric? lyrics;
+  Mp3Video? video;
 
-  Mp3Album({
+  Mp3Music({
     this.id,
     this.slug,
     this.artist,
-    this.name,
+    this.title,
+    this.album,
     this.genre,
+    this.track,
     this.year,
     this.duration,
-    this.tracksNb,
+    this.bitrate,
     this.label,
     this.cover,
     this.filesize,
@@ -44,44 +49,42 @@ class Mp3Album {
     this.country,
     this.uploaded,
     this.uploader,
-    this.visible,
-    this.otherInfos,
-    this.likes,
-    this.dislikes,
-    this.trackList,
+    this.lyrics,
+    this.video,
   });
 
-  Mp3Album copyWith({
+  Mp3Music copyWith({
     int? id,
     String? slug,
     String? artist,
-    String? name,
+    String? title,
+    String? album,
     String? genre,
+    String? track,
     String? year,
     String? duration,
-    int? tracksNb,
-    String? label,
+    String? bitrate,
+    dynamic label,
     Mp3Cover? cover,
     String? filesize,
     int? hits,
     int? country,
     DateTime? uploaded,
-    int? uploader,
-    int? visible,
-    String? otherInfos,
-    int? likes,
-    int? dislikes,
-    String? trackList,
+    String? uploader,
+    Mp3Lyric? lyrics,
+    Mp3Video? video,
   }) =>
-      Mp3Album(
+      Mp3Music(
         id: id ?? this.id,
         slug: slug ?? this.slug,
         artist: artist ?? this.artist,
-        name: name ?? this.name,
+        title: title ?? this.title,
+        album: album ?? this.album,
         genre: genre ?? this.genre,
+        track: track ?? this.track,
         year: year ?? this.year,
         duration: duration ?? this.duration,
-        tracksNb: tracksNb ?? this.tracksNb,
+        bitrate: bitrate ?? this.bitrate,
         label: label ?? this.label,
         cover: cover ?? this.cover,
         filesize: filesize ?? this.filesize,
@@ -89,27 +92,26 @@ class Mp3Album {
         country: country ?? this.country,
         uploaded: uploaded ?? this.uploaded,
         uploader: uploader ?? this.uploader,
-        visible: visible ?? this.visible,
-        otherInfos: otherInfos ?? this.otherInfos,
-        likes: likes ?? this.likes,
-        dislikes: dislikes ?? this.dislikes,
-        trackList: trackList ?? this.trackList,
+        lyrics: lyrics ?? this.lyrics,
+        video: video ?? this.video,
       );
 
-  factory Mp3Album.fromRawJson(String str) =>
-      Mp3Album.fromJson(json.decode(str));
+  factory Mp3Music.fromRawJson(String str) =>
+      Mp3Music.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Mp3Album.fromJson(Map<String, dynamic> json) => Mp3Album(
+  factory Mp3Music.fromJson(Map<String, dynamic> json) => Mp3Music(
     id: json["id"],
     slug: json["slug"],
     artist: json["artist"],
-    name: json["name"],
+    title: json["title"],
+    album: json["album"],
     genre: json["genre"],
+    track: json["track"],
     year: json["year"],
     duration: json["duration"],
-    tracksNb: json["tracks_nb"],
+    bitrate: json["bitrate"],
     label: json["label"],
     cover: json["cover"] == null ? null : Mp3Cover.fromJson(json["cover"]),
     filesize: json["filesize"],
@@ -118,22 +120,24 @@ class Mp3Album {
     uploaded:
     json["uploaded"] == null ? null : DateTime.parse(json["uploaded"]),
     uploader: json["uploader"],
-    visible: json["visible"],
-    otherInfos: json["other_infos"],
-    likes: json["likes"],
-    dislikes: json["dislikes"],
-    trackList: json["track_list"],
+    lyrics: json["lyrics"] == null
+        ? null
+        : Mp3Lyric.fromJson(json["lyrics"]),
+    video:
+    json["video"] == null ? null : Mp3Video.fromJson(json["video"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "slug": slug,
     "artist": artist,
-    "name": name,
+    "title": title,
+    "album": album,
     "genre": genre,
+    "track": track,
     "year": year,
     "duration": duration,
-    "tracks_nb": tracksNb,
+    "bitrate": bitrate,
     "label": label,
     "cover": cover?.toJson(),
     "filesize": filesize,
@@ -141,16 +145,7 @@ class Mp3Album {
     "country": country,
     "uploaded": uploaded?.toIso8601String(),
     "uploader": uploader,
-    "visible": visible,
-    "other_infos": otherInfos,
-    "likes": likes,
-    "dislikes": dislikes,
-    "track_list": trackList,
+    "lyrics": lyrics?.toJson(),
+    "video": video?.toJson(),
   };
-
-  @override
-  String toString(){
-    return "Album(slug: $slug, name:$name)\n";
-  }
-
 }

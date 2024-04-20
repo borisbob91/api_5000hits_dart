@@ -1,4 +1,4 @@
-part of "mp3_album_base_service.dart";
+part of 'mp3_album_base_service.dart';
 
 
 abstract class Mp3AlbumService {

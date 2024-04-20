@@ -1,4 +1,4 @@
-part of "mp3_album.dart";
+part of 'mp3_album.dart';
 
 
 class Mp3Cover {
