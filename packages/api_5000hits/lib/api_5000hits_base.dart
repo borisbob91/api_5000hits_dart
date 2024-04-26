@@ -2,6 +2,7 @@ part of 'api_5000hits.dart';
 
 class MusicSdk  with InitializationMixin{
   late final Album _album;
+  late final Music _music;
   static String _apiKey = "";
   bool _appInit = false;
 
@@ -13,9 +14,10 @@ class MusicSdk  with InitializationMixin{
   }
 
   MusicSdk._internal(){
-    print("***************sdk internal initialisatin:");
     _album = Album();
+    _music = Music();
   }
+
 
   MusicSdk init({required String key}) {
     print("initialisation instance");
@@ -28,6 +30,12 @@ class MusicSdk  with InitializationMixin{
   Album? get album{
     if (checkInitialization()){
     return _album;
+    }
+    return null;
+  }
+  Music? get music{
+    if (checkInitialization()){
+      return _music;
     }
     return null;
   }

@@ -33,6 +33,7 @@ dependencies:
   api_5000hits:
       path: packages/api_5000hits
   dio: ^5.4.1
+  audioplayers:
 
 
   # The following adds the Cupertino Icons font to your application.

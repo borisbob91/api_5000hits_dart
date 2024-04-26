@@ -13,6 +13,7 @@ static final Mp3AlbumBaseService _mp3albumBaseService = Mp3AlbumBaseService.inst
   Future<List<Mp3Album>> fetchNextAlbum() async {
     return await _mp3albumBaseService.fetchAlbumsNext();
   }
+
 }
 
 

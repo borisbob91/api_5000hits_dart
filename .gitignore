@@ -44,3 +44,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /windows/
+
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea
+.dart_tool
