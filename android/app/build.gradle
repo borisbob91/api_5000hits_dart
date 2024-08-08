@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.keduson.mp2.api_5000hits_dart"
-    compileSdkVersion flutter.compileSdkVersion
+    // compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
