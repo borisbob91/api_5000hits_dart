@@ -1,11 +1,18 @@
-part of 'mp3_album.dart';
+//part of 'mp3_album.dart';
 
 
+import 'dart:convert';
+
+import 'package:isar/isar.dart';
+part 'mp3_cover.g.dart';
+@Collection()
 class Mp3Cover {
+  Id? id;
   String? max;
   String? min;
 
   Mp3Cover({
+    this.id,
     this.max,
     this.min,
   });

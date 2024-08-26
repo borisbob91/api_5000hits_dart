@@ -3,6 +3,7 @@ part of 'api_5000hits.dart';
 class MusicSdk  with InitializationMixin{
   late final Album _album;
   late final Music _music;
+  late final AlbumContrat _albumContrat;
   static String _apiKey = "";
   bool _appInit = false;
 
@@ -16,6 +17,7 @@ class MusicSdk  with InitializationMixin{
   MusicSdk._internal(){
     _album = Album();
     _music = Music();
+    _albumContrat = AlbumContrat();
   }
 
 
@@ -39,7 +41,12 @@ class MusicSdk  with InitializationMixin{
     }
     return null;
   }
-
+  AlbumContrat? get albumContrat{
+    if(checkInitialization()){
+      return _albumContrat;
+    }
+    return null;
+  }
   static MusicSdk get instance {
 
     return _instance;

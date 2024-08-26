@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:api_5000hits/src/features/album/mp3_album.dart';
+import 'package:api_5000hits/src/features/album/mp3_cover.dart';
 import 'package:api_5000hits/src/features/lyric/mp3_lyric.dart';
 import 'package:api_5000hits/src/features/video/mp3_video.dart';
 

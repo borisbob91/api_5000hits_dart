@@ -5,5 +5,5 @@ abstract class Mp3AlbumRepositoryInterface {
   Future<List<Mp3Album>> fetchNextAlbums();
   Future<Mp3Album> getAlbumBySlug(String slug);
   bool canFetchNext();
-
+  
 }

@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import '../features/album/mp3_album.dart';
+import '../features/album/mp3_cover.dart';
 
 
 class BaseMp3Album {

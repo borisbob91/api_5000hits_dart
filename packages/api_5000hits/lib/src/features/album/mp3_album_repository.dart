@@ -1,71 +1,81 @@
 import 'dart:convert';
-import 'package:api_5000hits/src/utils/base_repository.dart';
-import 'mp3_album.dart';
-import 'package:dio/src/response.dart';
+
+import 'package:api_5000hits/src/core/databases/database_interface.dart';
+import 'package:api_5000hits/src/features/album/mp3_album.dart';
+import 'package:api_5000hits/src/utils/api_client.dart';
+import 'package:dio/dio.dart';
+
+
 part 'mp3_album_base_repository.dart';
+part 'mp3_album_local_repository.dart';
+part 'mp3_album_remote_repositorry.dart';
 
-class Mp3AlbumRepository extends BaseRepository implements Mp3AlbumRepositoryInterface{
-  // final ApiClient _apiClient;
-    String? nextPage = "";
-    int? count = 0;
-    final String route= '/albums';
 
-  Mp3AlbumRepository();
+class Mp3AlbumRepository implements Mp3AlbumRepositoryInterface {
+  final Mp3AlbumLocalRepository localRepository;
+  final Mp3AlbumRemoteRepositorry remoteRepository;
+
+  Mp3AlbumRepository({required this.localRepository, required this.remoteRepository});
 
   @override
   Future<List<Mp3Album>> fetchAlbums() async {
     try {
-      final response = await apiClient.get('/albums');
-      return await _decodeResponse(response);
-    } catch (error) {
-      throw Exception('Failed to fetch albums to repo: $error');
-    }
-  }
+      // Vérifier d'abord dans le cache local
+      final cachedAlbums = await localRepository.getAllAlbums();
+      if (cachedAlbums.isNotEmpty) {
+        return cachedAlbums;
+      }
 
-  Future<List<Mp3Album>> _decodeResponse(Response<dynamic> response) async {
-    final respnseData = jsonDecode(response.toString());
-    final List<dynamic> data = respnseData['results'];
-    nextPage = respnseData['next'];
-    count = respnseData['count'];
-    return  data.map((json) => Mp3Album.fromJson(json)).toList();
-  }
+      // Si le cache est vide, récupérer depuis l'API
+      final albums = await remoteRepository.fetchAlbums();
 
-  @override
-  Future<Mp3Album> getAlbumBySlug(String slug) async {
-    try {
-      final response = await apiClient
-          .get('/albums/$slug/', queryParameters: {'slug': slug});
-      final Map<String, dynamic> data = response.data;
-      return Mp3Album.fromJson(data);
-    } catch (error) {
-      throw Exception('Failed to fetch album by slug: $error');
-    }
-  }
+      // Mettre en cache les albums récupérés
+      for (var album in albums) {
+        await localRepository.saveAlbum(album);
+      }
 
-  @override
-  Future<List<Mp3Album>> fetchNextAlbums() async {
-    String? url = nextPage;
-    if(!canFetchNext()){
-      print("can not next url");
-      return [];
-    }
-    nextPage = "";
-    try {
-      final response = await apiClient.get(route, queryParameters: _extractOffsetAndLimit(url!));
-      return _decodeResponse(response);
+      return albums;
     } catch (error) {
       throw Exception('Failed to fetch albums: $error');
     }
   }
 
   @override
-  bool canFetchNext() {
-    return nextPage!.isNotEmpty;
-  }
-  Map<String, dynamic> _extractOffsetAndLimit(String url) {
-      Uri uri = Uri.parse(url);
-      int offset = int.tryParse(uri.queryParameters['offset'] ?? '') ?? 0;
-      int limit = int.tryParse(uri.queryParameters['limit'] ?? '') ?? 100; // Valeur par défaut si limit n'est pas spécifié
-      return {'offset': offset, 'limit': limit};
+  Future<Mp3Album> getAlbumBySlug(String slug) async {
+    try {
+      // Vérifier d'abord dans le cache local
+      final cachedAlbum = await localRepository.getAlbumBySlug(slug);
+      if (cachedAlbum != null) {
+        return cachedAlbum;
+      }
+
+      // Si non trouvé dans le cache, récupérer depuis l'API
+      final album = await remoteRepository.getAlbumBySlug(slug);
+
+      // Mettre en cache l'album récupéré
+      await localRepository.saveAlbum(album);
+
+      return album;
+    } catch (error) {
+      throw Exception('Failed to fetch album by slug: $error');
     }
+  }
+
+  Future<void> clearCache() async {
+    await localRepository.clearAllAlbums();
+  }
+  
+  @override
+  bool canFetchNext() {
+    // TODO: implement canFetchNext
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Mp3Album>> fetchNextAlbums() {
+    // TODO: implement fetchNextAlbums
+    throw UnimplementedError();
+  }
+
+  // Vous pouvez ajouter d'autres méthodes ici selon vos besoins
 }
