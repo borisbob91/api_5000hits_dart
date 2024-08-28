@@ -121,24 +121,37 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
     });
   }
 
-  @override
+ 
+   @override
   Future<void> updateAlbum(Mp3Album album) async {
-    // Vérifier si l'album existe déjà
-    final b = isar.mp3Albums.filter().slugEqualTo(album.slug).findFirst();
-  if (b == null) {
-      throw Exception('Album with slug ${album.slug} does not exist');
-    }
     await isar.writeTxn(() async {
-      // Mettre à jour la couverture si elle existe
-      
-      if (album.cover.value != null) {
-        await isar.mp3Covers.put(album.cover.value!);
+      // Rechercher l'album existant par slug
+      final existingAlbum = await isar.mp3Albums.filter().slugEqualTo(album.slug).findFirst();
+
+      if (existingAlbum != null) {
+        // Mettre à jour l'ID de l'album à mettre à jour avec l'ID de l'album existant
+        album.id = existingAlbum.id;
+
+        // Mettre à jour la couverture si elle existe
+        if (album.cover.value != null) {
+          // Si la couverture existante a un ID, utilisez-le pour la mise à jour
+          if (existingAlbum.cover.value?.id != null) {
+            album.cover.value!.id = existingAlbum.cover.value!.id;
+          }
+          await isar.mp3Covers.put(album.cover.value!);
+        }
+
+        // Mettre à jour l'album
+        await isar.mp3Albums.put(album);
+      } else {
+        // Si l'album n'existe pas, créez-le
+        await isar.mp3Albums.put(album);
+        if (album.cover.value != null) {
+          await isar.mp3Covers.put(album.cover.value!);
+        }
       }
-      // Ensuite, mettre à jour l'album
-      await isar.mp3Albums.put(album);
     });
   }
-
   // Nouvelle méthode pour supprimer un album et sa couverture
   @override
   Future<void> deleteAlbum(Id id) async {

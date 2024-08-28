@@ -179,7 +179,7 @@ part 'mp3_album.g.dart';
 class Mp3Album {
   Id id = Isar.autoIncrement;
 
-  @Index(type: IndexType.value)
+  @Index(unique: true, replace: true ,type: IndexType.value)
   late String slug;
 
   @Index(type: IndexType.value)

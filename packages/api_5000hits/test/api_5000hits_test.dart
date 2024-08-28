@@ -23,7 +23,7 @@ void main() async {
 Future<void> testAlbumFunctionality(MusicSdk sdk) async {
   try {
     // Fetch albums
-    final albums = await sdk.album?.fetchAlbumsList();
+    final albums = await sdk.albumContrat?.getAlbums();
     print('Fetched ${albums?.length} albums');
     if (albums != null && albums.isNotEmpty) {
       print('First album: ${albums.first}');

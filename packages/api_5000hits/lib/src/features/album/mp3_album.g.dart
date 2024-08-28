@@ -117,8 +117,8 @@ const Mp3AlbumSchema = CollectionSchema(
     r'slug': IndexSchema(
       id: 6169444064746062836,
       name: r'slug',
-      unique: false,
-      replace: false,
+      unique: true,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'slug',
@@ -328,6 +328,60 @@ List<IsarLinkBase<dynamic>> _mp3AlbumGetLinks(Mp3Album object) {
 void _mp3AlbumAttach(IsarCollection<dynamic> col, Id id, Mp3Album object) {
   object.id = id;
   object.cover.attach(col, col.isar.collection<Mp3Cover>(), r'cover', id);
+}
+
+extension Mp3AlbumByIndex on IsarCollection<Mp3Album> {
+  Future<Mp3Album?> getBySlug(String slug) {
+    return getByIndex(r'slug', [slug]);
+  }
+
+  Mp3Album? getBySlugSync(String slug) {
+    return getByIndexSync(r'slug', [slug]);
+  }
+
+  Future<bool> deleteBySlug(String slug) {
+    return deleteByIndex(r'slug', [slug]);
+  }
+
+  bool deleteBySlugSync(String slug) {
+    return deleteByIndexSync(r'slug', [slug]);
+  }
+
+  Future<List<Mp3Album?>> getAllBySlug(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return getAllByIndex(r'slug', values);
+  }
+
+  List<Mp3Album?> getAllBySlugSync(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'slug', values);
+  }
+
+  Future<int> deleteAllBySlug(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'slug', values);
+  }
+
+  int deleteAllBySlugSync(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'slug', values);
+  }
+
+  Future<Id> putBySlug(Mp3Album object) {
+    return putByIndex(r'slug', object);
+  }
+
+  Id putBySlugSync(Mp3Album object, {bool saveLinks = true}) {
+    return putByIndexSync(r'slug', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllBySlug(List<Mp3Album> objects) {
+    return putAllByIndex(r'slug', objects);
+  }
+
+  List<Id> putAllBySlugSync(List<Mp3Album> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'slug', objects, saveLinks: saveLinks);
+  }
 }
 
 extension Mp3AlbumQueryWhereSort on QueryBuilder<Mp3Album, Mp3Album, QWhere> {
