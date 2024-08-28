@@ -5,14 +5,15 @@ class Mp3AlbumRemoteRepositorry implements Mp3AlbumRepositoryInterface{
   final ApiClient apiClient;
     String? nextPage = "";
     int? count = 0;
-    final String route= '/albums';
+    final String route= '/api/v1/albums';
 
   Mp3AlbumRemoteRepositorry({required this.apiClient});
 
   @override
   Future<List<Mp3Album>> fetchAlbums() async {
     try {
-      final response = await apiClient.get('/albums');
+      print('fetch old api');
+      final response = await apiClient.get('/api/v1/albums/');
       return await _decodeResponse(response);
     } catch (error) {
       throw Exception('Failed to fetch albums to repo: $error');
@@ -31,7 +32,7 @@ class Mp3AlbumRemoteRepositorry implements Mp3AlbumRepositoryInterface{
   Future<Mp3Album> getAlbumBySlug(String slug) async {
     try {
       final response = await apiClient
-          .get('/albums/$slug/', queryParameters: {'slug': slug});
+          .get('$route/$slug/', queryParameters: {'slug': slug});
       final Map<String, dynamic> data = response.data;
       return Mp3Album.fromJson(data);
     } catch (error) {

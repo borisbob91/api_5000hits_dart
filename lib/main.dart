@@ -1,5 +1,6 @@
 import 'package:api_5000hits/api_5000hits.dart';
 import 'package:api_5000hits_dart/album_detail.dart';
+import 'package:api_5000hits_dart/album_list.dart';
 import 'package:api_5000hits_dart/music_detail.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -43,6 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _fetchalubms() {
     setState(() {
       isLoading = true;
+    });
+    musicSdk.albumContrat?.getAlbums().then((onValue) {
+      final data = onValue;
+      print('contrat loaded ${data}');
     });
     musicSdk.album?.fetchAlbumsList().then((value)  {
       albums = value;
@@ -72,6 +76,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+              return AlbumListPage();
+            }));
+          }),
+        ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: () {
         // _fetchalubms();

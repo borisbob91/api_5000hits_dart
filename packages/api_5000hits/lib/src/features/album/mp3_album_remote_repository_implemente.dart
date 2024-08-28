@@ -83,6 +83,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   }) async {
      // TODO: implement fetchAlbums
     try {
+    
       final response = await apiClient.get('$route', queryParameters: {
         if (artist != null) 'artist': artist,
         if (slug != null) 'slug': slug,
@@ -97,6 +98,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
       });
       //final List<dynamic> data = response.data['results'];
       //return data.map((json) => Mp3Album.fromJson(json)).toList();
+      print('**************fetch albums results: ${response.data}');
       return await _decodeResponse(response);
 
     } catch (error) {

@@ -31,22 +31,29 @@ class Mp3AlbumServiceImpl implements Mp3AlbumServiceInterface {
   Mp3AlbumServiceImpl(this._remoteRepository, this._localRepository);
   
   @override
-  Future<PaginationResult<Mp3Album>> getAlbums({int page = 0, int pageSize = 20}) async {
+  Future<List<Mp3Album>> getAlbums({int page = 0, int pageSize = 20}) async {
+    print('try fetching**************************');
+    final remoteAlbums = await _remoteRepository.fetchAlbums();
     try {
       if (await needsUpdate()) {
+        print("need to update");
         final remoteAlbums = await _remoteRepository.fetchAlbums(offset: page * pageSize, limit: pageSize);
-        await _localRepository.saveAlbums(remoteAlbums);
-        return PaginationResult(
+        print('result: $remoteAlbums');
+         _localRepository.saveAlbums(remoteAlbums);
+        final i = PaginationResult(
           items: remoteAlbums,
           totalCount: remoteAlbums.length,
           currentPage: page,
           pageSize: pageSize,
         );
+        return remoteAlbums;
       } else {
-        return await _localRepository.getAllAlbums(page: page, pageSize: pageSize);
+        final d = await _localRepository.getAllAlbums(page: page, pageSize: pageSize);
+        return  d.items;
       }
     } catch (e) {
-      return await _localRepository.getAllAlbums(page: page, pageSize: pageSize);
+      final d = await _localRepository.getAllAlbums(page: page, pageSize: pageSize);
+       return d.items;
     }
   }
 

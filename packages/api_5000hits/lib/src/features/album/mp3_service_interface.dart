@@ -4,7 +4,7 @@ import 'package:api_5000hits/src/features/album/pagiination_results.dart';
 abstract class Mp3AlbumServiceInterface {
   /// Récupère une liste paginée d'albums.
   /// Tente d'abord de récupérer depuis le cache local, puis met à jour avec les données distantes si nécessaire.
-  Future<PaginationResult<Mp3Album>> getAlbums({int page = 0, int pageSize = 20});
+  Future<List<Mp3Album>> getAlbums({int page = 0, int pageSize = 20});
 
   /// Recherche des albums basés sur un terme de recherche.
   /// Effectue d'abord une recherche locale, puis une recherche distante si nécessaire.

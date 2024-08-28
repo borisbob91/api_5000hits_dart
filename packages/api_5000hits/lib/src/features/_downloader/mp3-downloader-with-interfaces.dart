@@ -1,0 +1,213 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:path/path.dart' as path;
+import 'package:crypto/crypto.dart' as crypto;
+import 'dart:convert';
+
+import '_download_interface.dart';
+
+
+
+// Implémentations
+
+class DownloadException implements Exception {
+  final String message;
+  DownloadException(this.message);
+  @override
+  String toString() => 'DownloadException: $message';
+}
+
+class _Mp3Downloader implements ResumableDownloaderInterface {
+  final Dio _dio;
+  final String _baseUrl;
+  final String _apiKey;
+  final SignatureGeneratorInterface _signatureGenerator;
+
+  _Mp3Downloader(this._signatureGenerator) : 
+    _dio = Dio(),
+    _baseUrl = 'https://api.example.com/download',
+    _apiKey = 'votre_clé_api_secrète' {
+    _dio.options.headers['Authorization'] = 'Bearer $_apiKey';
+    _dio.options.connectTimeout = Duration(seconds: 30);
+    _dio.options.receiveTimeout = Duration(seconds: 60);
+  }
+
+  @override
+  Future<void> downloadFile(String url, String savePath, Function(int, int) onProgress) async {
+    try {
+      final response = await _dio.get(
+        url,
+        options: Options(responseType: ResponseType.bytes),
+        onReceiveProgress: onProgress,
+      );
+      
+      final file = File(savePath);
+      await file.writeAsBytes(response.data);
+    } on DioException catch (e) {
+      throw DownloadException(_handleDioError(e));
+    } catch (e) {
+      throw DownloadException('Erreur inattendue lors du téléchargement: $e');
+    }
+  }
+
+  String _handleDioError(DioException e) {
+    // ... (même implémentation qu'avant)
+    throw DownloadException('Erreur de téléchargement: $e');
+  }
+
+  @override
+  String getDownloadUrl(String slug) {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final signature = _signatureGenerator.generateSignature(slug, timestamp);
+    return '$_baseUrl/$slug?timestamp=$timestamp&signature=$signature';
+  }
+  
+   @override
+  Future<void> resumeDownload(String url, String savePath, int startByte, Function(int, int) onProgress) async {
+    try {
+      final response = await _dio.get(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: {'Range': 'bytes=$startByte-'},
+        ),
+        onReceiveProgress: onProgress,
+      );
+      
+      final file = File(savePath);
+      await file.writeAsBytes(response.data, mode: FileMode.append);
+    } catch (e) {
+      throw DownloadException('Erreur lors de la reprise du téléchargement: $e');
+    }
+  }
+}
+
+class DefaultSignatureGenerator implements SignatureGeneratorInterface {
+  final String _apiKey;
+
+  DefaultSignatureGenerator(this._apiKey);
+
+  @override
+  String generateSignature(String slug, int timestamp) {
+    final data = '$slug$timestamp$_apiKey';
+    return crypto.md5.convert(utf8.encode(data)).toString();
+  }
+}
+
+enum DownloadStatus { notStarted, downloading, completed, failed }
+
+class DownloadInfo {
+  final String slug;
+  final String filePath;
+  DownloadStatus status;
+  double progress;
+
+  DownloadInfo(this.slug, this.filePath)
+      : status = DownloadStatus.notStarted,
+        progress = 0.0;
+}
+
+class Mp3DownloadManager implements DownloadManagerInterface {
+  final DownloaderInterface _downloader;
+  final Map<String, DownloadInfo> _downloads = {};
+
+  Mp3DownloadManager(this._downloader);
+
+  @override
+  Future<void> downloadMusic(String slug, String savePath, Function(DownloadInfo) onProgressUpdate) async {
+    final filePath = path.join(savePath, '$slug.mp3');
+    final downloadInfo = DownloadInfo(slug, filePath);
+    _downloads[slug] = downloadInfo;
+
+    try {
+      final url = _downloader.getDownloadUrl(slug);
+      downloadInfo.status = DownloadStatus.downloading;
+      onProgressUpdate(downloadInfo);
+
+      await _downloader.downloadFile(
+        url,
+        filePath,
+        (received, total) {
+          if (total != -1) {
+            downloadInfo.progress = received / total;
+            onProgressUpdate(downloadInfo);
+          }
+        },
+      );
+
+      downloadInfo.status = DownloadStatus.completed;
+      downloadInfo.progress = 1.0;
+      onProgressUpdate(downloadInfo);
+    } catch (e) {
+      downloadInfo.status = DownloadStatus.failed;
+      onProgressUpdate(downloadInfo);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> cancelDownload(String slug) async {
+    // Implémentation de l'annulation du téléchargement
+  }
+
+  @override
+  DownloadInfo? getDownloadInfo(String slug) => _downloads[slug];
+
+  @override
+  List<DownloadInfo> getAllDownloads() => _downloads.values.toList();
+}
+
+// Exemple d'utilisation dans la classe Album
+class AlbumMp3 {
+  final DownloadManagerInterface _downloadManager;
+
+  AlbumMp3(this._downloadManager);
+
+  Future<void> downloadAlbum(String slug, String savePath) async {
+    try {
+      await _downloadManager.downloadMusic(
+        slug,
+        savePath,
+        (info) {
+          print('Téléchargement de ${info.slug}: ${(info.progress * 100).toStringAsFixed(2)}% - ${info.status}');
+        },
+      );
+    } on DownloadException catch (e) {
+      print('Erreur de téléchargement: $e');
+    }
+  }
+
+  void cancelAlbumDownload(String slug) {
+    _downloadManager.cancelDownload(slug);
+  }
+
+  List<DownloadInfo> getDownloadedAlbums() {
+    return _downloadManager.getAllDownloads();
+  }
+}
+
+// Factory pour créer les instances
+class DownloadFactory {
+  static DownloadManagerInterface createDownloadManager() {
+    final signatureGenerator = DefaultSignatureGenerator('votre_clé_api_secrète');
+    final downloader = _Mp3Downloader(signatureGenerator);
+    return Mp3DownloadManager(downloader);
+  }
+}
+
+// Utilisation
+void main() {
+  final downloadManager = DownloadFactory.createDownloadManager();
+  final album = AlbumMp3(downloadManager);
+  
+  album.downloadAlbum('mon-album-slug', '/chemin/de/sauvegarde');
+}
+
+// class ExtendedDownloadFactory {
+//   static DownloadManagerInterface createExtendedDownloadManager() {
+//     final baseDownloader = ResumableDownloader(Dio());
+//     final baseManager = Mp3DownloadManager(baseDownloader);
+//     final concurrentManager = ConcurrentDownloadManager(baseManager);
+//     return PausableDownloadManager(concurrentManager);
+//   }
+// }

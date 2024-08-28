@@ -31,14 +31,14 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('Artist: ${widget.album.artist}'),
-            Text('Artist: ${widget.album.tracksNb}'),
-            Text('Artist: ${widget._mp3album?.trackList}'),
-            if (widget.album != null) Image.network(
-              "https://img.freepik.com/free-vector/stylish-music-background_1394-1015.jpg?w=740&t=st=1713670017~exp=1713670617~hmac=e087aa741b1014054a9fd37fda387802ea7d23b17dea6ad0704a535df1709acf" ?? '',
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-            ) else Container(),
+            Text('Track Number: ${widget.album.tracksNb}'),
+            Text('playlist: ${widget.album.trackList}'),
+            Image.network(
+            widget.album.cover.value?.max ?? "https://img.freepik.com/free-vector/stylish-music-background_1394-1015.jpg?w=740&t=st=1713670017~exp=1713670617~hmac=e087aa741b1014054a9fd37fda387802ea7d23b17dea6ad0704a535df1709acf",
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
             // Ajoutez d'autres détails de l'album ici
           ],
         ),

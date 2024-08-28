@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 class ApiClient {
   //
   //static const String baseUrl = 'http://172.19.0.1:8002';
-  static const String baseUrl = 'http://172.28.112.1/:8000';
+  // static const String baseUrl = 'http://172.28.112.1:8000';
+   static const String baseUrl = 'https://api2.5000hits.com';
+  
   late Dio _dio;
 
   ApiClient()  {

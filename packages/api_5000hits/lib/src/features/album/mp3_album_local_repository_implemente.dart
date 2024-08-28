@@ -31,12 +31,13 @@ class Mp3AlbumLocalRepositoryImplemente implements Mp3AlbumLocalRepositoryInterf
     
     final items = allItems.sublist(startIndex, endIndex);
 
-    return PaginationResult(
+    final result = PaginationResult(
       items: items,
       totalCount: totalCount,
       currentPage: page,
       pageSize: pageSize,
     );
+    return result;
   }
   
 Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
@@ -50,12 +51,13 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
         .limit(pageSize)
         .findAll();
 
-    return PaginationResult(
+    final result = PaginationResult(
       items: items,
       totalCount: totalCount,
       currentPage: page,
       pageSize: pageSize,
     );
+    return result;
   }
   // @override
   // Future<List<Mp3Album>> getAllAlbums() async {
@@ -78,6 +80,7 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
  @override
   Future<void> saveAlbum(Mp3Album album) async {
     bool exist = await albumExists(album.slug);
+    print("album with slug ${album.slug} exist : $exist");
     if (exist) {
       await updateAlbum(album);
     } else {
@@ -120,8 +123,14 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
 
   @override
   Future<void> updateAlbum(Mp3Album album) async {
+    // Vérifier si l'album existe déjà
+    final b = isar.mp3Albums.filter().slugEqualTo(album.slug).findFirst();
+  if (b == null) {
+      throw Exception('Album with slug ${album.slug} does not exist');
+    }
     await isar.writeTxn(() async {
       // Mettre à jour la couverture si elle existe
+      
       if (album.cover.value != null) {
         await isar.mp3Covers.put(album.cover.value!);
       }

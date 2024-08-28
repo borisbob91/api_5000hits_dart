@@ -10,6 +10,8 @@ class PaginationResult<T> {
     required this.currentPage,
     required this.pageSize,
   });
+  // get de la liste des albums
+  List<T> get datas => items;
 
   bool get hasNextPage => currentPage * pageSize < totalCount;
 }
