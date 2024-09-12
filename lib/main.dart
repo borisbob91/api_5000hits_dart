@@ -1,8 +1,10 @@
 import 'package:api_5000hits/api_5000hits.dart';
 import 'package:api_5000hits_dart/album_detail.dart';
+import 'package:api_5000hits_dart/album_gender.dart';
 import 'package:api_5000hits_dart/album_list.dart';
 import 'package:api_5000hits_dart/music_detail.dart';
 import 'package:flutter/material.dart';
+
 
 void main() {
   runApp( MyApp());
@@ -14,12 +16,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '500Hits SDK test',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home:  MyHomePage(title: '5000Hits APi Test',),
     );
   }
 }
@@ -47,12 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
     musicSdk.albumContrat?.getAlbums().then((onValue) {
       final data = onValue;
       print('contrat loaded ${data}');
-    });
-    musicSdk.album?.fetchAlbumsList().then((value)  {
-      albums = value;
-      print('loading ended');
-      setState(() {
+       setState(() {
         isLoading = false;
+        albums = data;
       });
     });
   }
@@ -89,7 +88,24 @@ class _MyHomePageState extends State<MyHomePage> {
         _fetchMusics();
       },
       child: const Icon(Icons.add) ,),
-      body: MusicWidget(isLoading: isLoading, musics: musics),
+      body: SingleChildScrollView(child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return AlbumListPage();
+              }));
+
+            }, child: Text('Album List')),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return AlbumListByGenrePage();
+              }));
+
+            }, child: Text('Album genre')),
+          ],
+      ),),)
     );
   }
 }

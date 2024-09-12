@@ -155,6 +155,12 @@ const Mp3AlbumSchema = CollectionSchema(
     )
   },
   links: {
+    r'musics': LinkSchema(
+      id: 1429869286352874660,
+      name: r'musics',
+      target: r'Mp3Music',
+      single: false,
+    ),
     r'cover': LinkSchema(
       id: 2079377816011204093,
       name: r'cover',
@@ -322,11 +328,12 @@ Id _mp3AlbumGetId(Mp3Album object) {
 }
 
 List<IsarLinkBase<dynamic>> _mp3AlbumGetLinks(Mp3Album object) {
-  return [object.cover];
+  return [object.musics, object.cover];
 }
 
 void _mp3AlbumAttach(IsarCollection<dynamic> col, Id id, Mp3Album object) {
   object.id = id;
+  object.musics.attach(col, col.isar.collection<Mp3Music>(), r'musics', id);
   object.cover.attach(col, col.isar.collection<Mp3Cover>(), r'cover', id);
 }
 
@@ -2835,6 +2842,63 @@ extension Mp3AlbumQueryObject
 
 extension Mp3AlbumQueryLinks
     on QueryBuilder<Mp3Album, Mp3Album, QFilterCondition> {
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> musics(
+      FilterQuery<Mp3Music> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'musics');
+    });
+  }
+
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> musicsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'musics', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> musicsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'musics', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> musicsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'musics', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> musicsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'musics', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition>
+      musicsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'musics', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> musicsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'musics', lower, includeLower, upper, includeUpper);
+    });
+  }
+
   QueryBuilder<Mp3Album, Mp3Album, QAfterFilterCondition> cover(
       FilterQuery<Mp3Cover> q) {
     return QueryBuilder.apply(this, (query) {

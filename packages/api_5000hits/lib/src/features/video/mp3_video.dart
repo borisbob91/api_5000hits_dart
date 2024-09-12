@@ -4,8 +4,13 @@
 
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
+
+part 'mp3_video.g.dart';
+
+@Collection()
 class Mp3Video {
-  final int? id;
+   Id? id = Isar.autoIncrement;
   final DateTime? added;
   final String? title;
   final String? addedBy;

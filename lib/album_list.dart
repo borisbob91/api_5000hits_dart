@@ -2,96 +2,6 @@ import 'package:api_5000hits_dart/album_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:api_5000hits/api_5000hits.dart';
 
-// class AlbumListPage extends StatefulWidget {
-//   @override
-//   _AlbumListPageState createState() => _AlbumListPageState();
-// }
-
-// class _AlbumListPageState extends State<AlbumListPage> {
-//   final MusicSdk _musicSdk = MusicSdk.instance;
-//   List<Mp3Album> _albums = [];
-//   bool _isLoading = true;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _fetchAlbums();
-//   }
-
-//   Future<void> _fetchAlbums() async {
-//     try {
-//       List<Mp3Album>? albumsList = await _musicSdk.albumContrat?.getAlbums() ?? [];
-//       print('****************albumsList: ${albumsList}');
-//       // PaginationResult<Mp3Album> albums = await _musicSdk.albumContrat?.getAlbums() ?? [];
-//       setState(() {
-//          _albums = albumsList;
-//         _isLoading = false;
-//       });
-//     } catch (e) {
-//       print('Error fetching albums: $e');
-//       setState(() {
-//         _isLoading = false;
-//       });
-//     }
-//   }
-// // refresh music list{}
-//   Future<void> _refreshMusicList() async {
-//     setState(() {
-//       _isLoading = true;
-//       _albums = [];
-//     });
-//     _musicSdk.albumContrat?.clearCache();
-//     await _fetchAlbums();
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Albums'),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.search),
-//             onPressed: () {
-//               // Handle search action
-//             },
-//           ),
-//           IconButton(
-//             icon: const Icon(Icons.refresh),
-//             onPressed: () {
-//               // Handle search action
-//               _refreshMusicList();
-//             },
-//           ),
-          
-//         ],
-//       ),
-//       body: SafeArea(
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: Text(
-//                 'Trending',
-//                 style: TextStyle(),
-//               ),
-//             ),
-//             CategorySelector(),
-//             Expanded(
-//               child: _isLoading
-//                   ? Center(child: CircularProgressIndicator())
-//                   : AlbumList(albums: _albums),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
 class AlbumListPage extends StatefulWidget {
   @override
   _AlbumListPageState createState() => _AlbumListPageState();
@@ -341,7 +251,7 @@ class AlbumListItem extends StatelessWidget {
         ),
       ),
       title: Text(album.name),
-      subtitle: Text(album.artist),
+      subtitle: Text("${album.artist} - ${album.genre}"),
       trailing: Text('${album.hits ?? 0} plays'),
       onTap: () {
         // Navigate to album details page

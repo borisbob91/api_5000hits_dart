@@ -1,9 +1,8 @@
 import 'package:api_5000hits/src/core/databases/isar_manager.dart';
 import 'package:api_5000hits/src/features/album/mp3_cover.dart';
 import 'package:isar/isar.dart';
-import 'mp3_album_local_repository_interface.dart';
 import 'mp3_album.dart';
-import 'pagiination_results.dart';
+import 'mp3_album_local_repository_interface.dart';
 
 class Mp3AlbumLocalRepositoryImplemente implements Mp3AlbumLocalRepositoryInterface {
 
@@ -19,45 +18,17 @@ class Mp3AlbumLocalRepositoryImplemente implements Mp3AlbumLocalRepositoryInterf
   // get isar
   Isar get isar => isarManager.isar;
 
-  Future<PaginationResult<Mp3Album>> _paginateFilteredQuery(
-    List<Mp3Album> query,
-    int page,
-    int pageSize,
-  ) async {
-    final allItems = await query;
-    final totalCount = allItems.length;
-    final startIndex = page * pageSize;
-    final endIndex = (startIndex + pageSize).clamp(0, totalCount);
-    
-    final items = allItems.sublist(startIndex, endIndex);
-
-    final result = PaginationResult(
-      items: items,
-      totalCount: totalCount,
-      currentPage: page,
-      pageSize: pageSize,
-    );
-    return result;
-  }
   
-Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
+Future<List<Mp3Album>> _paginateQWhereQuery(
     QueryBuilder<Mp3Album, Mp3Album, QWhere> query,
     int page,
     int pageSize,
   ) async {
-    final totalCount = await query.count();
     final items = await query.sortByUploadedDesc()
         .offset(page * pageSize)
         .limit(pageSize)
         .findAll();
-
-    final result = PaginationResult(
-      items: items,
-      totalCount: totalCount,
-      currentPage: page,
-      pageSize: pageSize,
-    );
-    return result;
+    return items;
   }
   // @override
   // Future<List<Mp3Album>> getAllAlbums() async {
@@ -65,7 +36,7 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
   // }
   
    @override
-  Future<PaginationResult<Mp3Album>> getAllAlbums({int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Album>> getAllAlbums({int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
     final query =  isar.mp3Albums.where();
     return await _paginateQWhereQuery(query, page, pageSize);
   }
@@ -76,7 +47,6 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
   }
 
  
-
  @override
   Future<void> saveAlbum(Mp3Album album) async {
     bool exist = await albumExists(album.slug);
@@ -91,34 +61,16 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
         }
         // Ensuite, sauvegarder l'album
         await isar.mp3Albums.put(album);
+        await album.cover.save();
       });
     }
   }
 
   @override
   Future<void> saveAlbums(List<Mp3Album> albums) async {
-    // verifie que l'album avec le slug  existe avant de le sauvegarder
-    final existAlbums = await albums
-       .map((album) => albumExists(album.slug))
-       .toList();
-    // extraire les albums non existe avant de les sauvegarder
-    final albumsToSave = albums.where((item) => !existAlbums.contains(item)).toList();
-
-    await isar.writeTxn(() async {
-      // Sauvegarder d'abord toutes les couvertures
-      final covers = albumsToSave
-          .where((album) => album.cover.value != null)
-          .map((album) => album.cover.value!)
-          .toList();
-      await isar.mp3Covers.putAll(covers);
-
-      // Ensuite, sauvegarder tous les albums
-      await isar.mp3Albums.putAll(albums);
-    });
-
-    albumsToSave.map((item){
-      return updateAlbum(item);
-    });
+    for (var album in albums) {
+       saveAlbum(album);
+    }
   }
 
  
@@ -126,7 +78,7 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
   Future<void> updateAlbum(Mp3Album album) async {
     await isar.writeTxn(() async {
       // Rechercher l'album existant par slug
-      final existingAlbum = await isar.mp3Albums.filter().slugEqualTo(album.slug).findFirst();
+      final existingAlbum = await getAlbumBySlug(album.slug);
 
       if (existingAlbum != null) {
         // Mettre à jour l'ID de l'album à mettre à jour avec l'ID de l'album existant
@@ -137,18 +89,22 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
           // Si la couverture existante a un ID, utilisez-le pour la mise à jour
           if (existingAlbum.cover.value?.id != null) {
             album.cover.value!.id = existingAlbum.cover.value!.id;
+            album.cover.save();
           }
           await isar.mp3Covers.put(album.cover.value!);
+        
         }
 
         // Mettre à jour l'album
         await isar.mp3Albums.put(album);
       } else {
         // Si l'album n'existe pas, créez-le
-        await isar.mp3Albums.put(album);
+       
         if (album.cover.value != null) {
           await isar.mp3Covers.put(album.cover.value!);
         }
+         await isar.mp3Albums.put(album);
+         album.cover.saveSync();
       }
     });
   }
@@ -175,7 +131,7 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
  
 
   @override
-  Future<PaginationResult<Mp3Album>> searchAlbums(String searchTerm, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Album>> searchAlbums(String searchTerm, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
     if (searchTerm.isEmpty) {
       return getAllAlbums(page: page, pageSize: pageSize);
     }
@@ -187,7 +143,7 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
         .or()
         .genreContains(searchTerm, caseSensitive: false)
         .findAll();
-      return _paginateFilteredQuery(query, page, pageSize);
+      return query;
   }
 
   @override
@@ -195,72 +151,65 @@ Future<PaginationResult<Mp3Album>> _paginateQWhereQuery(
     return await isar.mp3Albums.filter().slugEqualTo(slug).isNotEmpty();
   }
 
+
   @override
-  Future<int> countAlbums() async {
-    return await isar.mp3Albums.count();
+  Future<List<Mp3Album>> getAlbumsByGenre(String genre, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+    return await isar.mp3Albums
+    .filter()
+    .genreContains(genre, caseSensitive: false)
+    .offset(page * pageSize)
+    .limit(pageSize)
+    .findAll();
   }
 
   @override
-  Future<PaginationResult<Mp3Album>> getAlbumsByPage({int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return await _paginateQWhereQuery(isar.mp3Albums.where(), page, pageSize);
-  }
+  Future<List<Mp3Album>> getAlbumsByArtist(String artist, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+    return await isar.mp3Albums.filter().artistEqualTo(artist, caseSensitive: false).findAll(); 
+    }
 
   @override
-  Future<PaginationResult<Mp3Album>> getAlbumsByGenre(String genre, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return await _paginateFilteredQuery(await isar.mp3Albums.filter().genreEqualTo(genre, caseSensitive: false).findAll(), page, pageSize);
-  }
-
-  @override
-  Future<PaginationResult<Mp3Album>> getAlbumsByArtist(String artist, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return _paginateFilteredQuery(await isar.mp3Albums.filter().artistEqualTo(artist, caseSensitive: false).findAll(), page, pageSize);
-  }
-
-  @override
-  Future<PaginationResult<Mp3Album>> getRecentAlbums( {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Album>> getRecentAlbums( {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
     return _paginateQWhereQuery(isar.mp3Albums.where(), page, pageSize);
-   
   }
 
   @override
-  Future<PaginationResult<Mp3Album>> getPopularAlbums({int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return _paginateFilteredQuery(await isar.mp3Albums.where().sortByHitsDesc().findAll(), page, pageSize);
+  Future<List<Mp3Album>> getPopularAlbums({int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+    return await isar.mp3Albums
+    .where()
+    .sortByHitsDesc()
+    .offset(page * pageSize)
+    .limit(pageSize)
+    .findAll();
   }
   
   
 @override
-  Future<PaginationResult<Mp3Album>> getAlbumsByCountry(int countryCode, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return _paginateFilteredQuery(await isar.mp3Albums.filter().countryEqualTo(countryCode).findAll(), page, pageSize);
-  }
-
-  // Méthode optionnelle pour récupérer les albums par code pays avec pagination
-  Future<List<Mp3Album>> getAlbumsByCountryCodePaginated(int countryCode, {int offset = 0, int limit = 20}) async {
-    return await isar.mp3Albums
-        .filter()
-        .countryEqualTo(countryCode)
-        .offset(offset)
-        .limit(limit)
-        .findAll();
-  }
-  
-
-  @override
-  Future<PaginationResult<Mp3Album>> getAlbumsByYearRange(String startYear, String endYear, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return _paginateFilteredQuery(await isar.mp3Albums.filter().yearBetween(startYear, endYear).findAll(), page, pageSize);
+  Future<List<Mp3Album>> getAlbumsByCountry(int countryCode, {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+    return await isar.mp3Albums.filter().countryEqualTo(countryCode).findAll();
   }
 
    @override
-  Future<PaginationResult<Mp3Album>> getSimilarAlbums(Mp3Album album,  {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
-    return _paginateFilteredQuery(await isar.mp3Albums.filter().genreContains(album.genre!, caseSensitive: false).and().not().idEqualTo(album.id).sortByYear().findAll(), page, pageSize);
+  Future<List<Mp3Album>> getSimilarAlbums(Mp3Album album,  {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}) async {
+    return await isar.mp3Albums
+    .filter()
+    .genreContains(album.genre!, caseSensitive: false)
+    .or()
+    .countryEqualTo(album.country!)
+    .and()
+    .not()
+    .slugEqualTo(album.slug)
+    .sortByYear()
+    .findAll();
   }
 
   @override
-  Future<PaginationResult<Mp3Album>> getAlbumsByDownloads({
+  Future<List<Mp3Album>> getAlbumsByDownloads({
     required int minDownloads,
      int maxDays= 60,
     int page = 0, int pageSize = DEFAULT_PAGE_SIZE
   }) async {
     final startDate = DateTime.now().subtract(Duration(days: maxDays));
-    return _paginateFilteredQuery(await isar.mp3Albums.filter().hitsGreaterThan(minDownloads).and().uploadedGreaterThan(startDate).sortByHitsDesc().findAll(), page, pageSize);
+    return await isar.mp3Albums.filter().hitsGreaterThan(minDownloads).and().uploadedGreaterThan(startDate).sortByHitsDesc().findAll();
   }
   
 }

@@ -75,9 +75,13 @@ convert
 file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/convert-3.1.1/
 file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/convert-3.1.1/lib/
 crypto
+3.4
+file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.5/
+file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.5/lib/
+csslib
 2.19
-file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.3/
-file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.3/lib/
+file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/csslib-1.0.0/
+file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/csslib-1.0.0/lib/
 dart_style
 2.19
 file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/dart_style-2.3.2/
@@ -126,6 +130,10 @@ graphs
 2.18
 file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/graphs-2.3.1/
 file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/graphs-2.3.1/lib/
+html
+2.19
+file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/html-0.15.4/
+file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/html-0.15.4/lib/
 http_multi_server
 2.12
 file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/http_multi_server-3.2.1/

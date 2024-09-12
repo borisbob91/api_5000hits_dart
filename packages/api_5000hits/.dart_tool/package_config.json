@@ -117,7 +117,13 @@
     },
     {
       "name": "crypto",
-      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.3",
+      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "csslib",
+      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/csslib-1.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
@@ -204,6 +210,12 @@
       "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/graphs-2.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "html",
+      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/html-0.15.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "http_multi_server",
@@ -536,7 +548,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-08-26T14:38:03.185505Z",
+  "generated": "2024-09-10T02:29:56.922526Z",
   "generator": "pub",
   "generatorVersion": "3.4.4",
   "flutterRoot": "file:///C:/flutter",

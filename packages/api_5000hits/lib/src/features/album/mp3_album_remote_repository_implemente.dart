@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 
 import '../../exceptions/album_exceptions.dart';
 import '../../utils/api_client.dart';
+import 'mp3_album_remote_repository_interface.dart';
 
-part 'mp3_album_remote_repository_interface.dart';
 
 
 class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface{
@@ -14,6 +14,8 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   final ApiClient apiClient;
     String? nextPage = "";
     int? count = 0;
+
+    @override
     final String route= '/api/v1/albums';
 
   Mp3AlbumRemoteRepositoryImplemente({required this.apiClient});
@@ -32,7 +34,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   Future<Mp3Album> getAlbumBySlug(String slug) async {
     try {
       final response = await apiClient
-          .get('$route/$slug/', queryParameters: {'slug': slug});
+          .get('$route/$slug/');
       final Map<String, dynamic> data = response.data;
       return Mp3Album.fromJson(data);
     } catch (error) {
@@ -81,9 +83,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
     int? limit,
     int? offset,
   }) async {
-     // TODO: implement fetchAlbums
     try {
-    
       final response = await apiClient.get('$route', queryParameters: {
         if (artist != null) 'artist': artist,
         if (slug != null) 'slug': slug,
@@ -96,9 +96,6 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,        
       });
-      //final List<dynamic> data = response.data['results'];
-      //return data.map((json) => Mp3Album.fromJson(json)).toList();
-      print('**************fetch albums results: ${response.data}');
       return await _decodeResponse(response);
 
     } catch (error) {
@@ -107,7 +104,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   }
     
      @override
-  Future<List<Mp3Music>> getAlbumTracks(String slug) async {
+  Future<List<Mp3Music>> getAlbumTracks(String slug,) async {
     // TODO: implement getAlbumTracks
     try {
       final response = await apiClient.get('$route/$slug/tracks/');
@@ -118,6 +115,45 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
       throw AlbumReadException('Failed to fetch album tracks: $error');
     }
   }
-    
+  
 
-}
+  
+  @override
+  Future<List<Mp3Album>> mostDownloadAlbums() async{
+    // TODO: implement mostDownloadAlbums
+    try {
+      final response = await apiClient.get('$route/most-downloaded/');
+      return _decodeResponse(response);
+    } catch (error) {
+      throw AlbumFetchException('Failed to fetch most downloaded album: $error');
+    }
+  }
+  
+  @override
+  Future<List<Mp3Album>> popularsAlbums({int page = 1, int pageSize = 20}) async{
+    // TODO: implement popularsAlbums
+      try {
+      final response = await apiClient.get('$route/populars/', queryParameters: {
+        'page': page,
+        'limit': pageSize,
+              
+      });
+      return _decodeResponse(response);
+    } catch (error) {
+      throw AlbumFetchException('Failed to fetch most downloaded album: $error');
+    }
+  }
+  
+  @override
+  Future<List<Mp3Album>> simularsMusics(String slug, {int page = 0, int pageSize = 20}) async{
+    // TODO: implement simularsMusics
+      try {
+      final response = await apiClient.get('$route/$slug/simulars/');
+      return _decodeResponse(response);
+    } catch (error) {
+      throw AlbumFetchException('Failed to fetch asimulars lbum: $error');
+    }
+  }
+
+  }
+    

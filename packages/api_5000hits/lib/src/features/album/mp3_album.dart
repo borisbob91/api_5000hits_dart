@@ -169,6 +169,7 @@
 
 
 // Fichier: mp3_album.dart
+import 'package:api_5000hits/api_5000hits.dart';
 import 'package:isar/isar.dart';
 
 import 'mp3_cover.dart';
@@ -204,6 +205,10 @@ class Mp3Album {
   late int dislikes;
   late String trackList;
 
+  @ignore
+  late List<Mp3Music> tracks = [];
+  
+  IsarLinks<Mp3Music> musics = IsarLinks<Mp3Music>();
   final cover = IsarLink<Mp3Cover>();
 
   Mp3Album({
@@ -252,7 +257,12 @@ class Mp3Album {
     if (json['cover'] != null) {
       album.cover.value = Mp3Cover.fromJson(json['cover']);
     }
-
+    if (json['tracks'] != null) {
+      for (var trackJson in List.from(json['tracks'])) {       
+         album.tracks.add(Mp3Music.fromJson(trackJson));
+         album.musics.add(Mp3Music.fromJson(trackJson));
+      }
+    }
     return album;
   }
 
@@ -278,10 +288,16 @@ class Mp3Album {
       'track_list': trackList,
     };
 
+    if(tracks.isNotEmpty){
+        data['tracks'] = tracks.map((track) => track.toJson()).toList();
+    }
     if (cover.value != null) {
       data['cover'] = cover.value!.toJson();
     }
 
     return data;
-  }
+ 
+ }
+
+
 }

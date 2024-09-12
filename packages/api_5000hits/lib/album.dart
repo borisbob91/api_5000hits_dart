@@ -1,27 +1,25 @@
-import 'package:api_5000hits/src/features/album/mp3_album.dart';
-import 'package:api_5000hits/src/features/album/mp3_album_base_service.dart';
 import 'package:api_5000hits/src/features/album/mp3_album_service_implemente.dart';
-
 import 'src/core/databases/isar_manager.dart';
 import 'src/features/album/mp3_album_local_repository_implemente.dart';
 import 'src/features/album/mp3_album_local_repository_interface.dart';
 import 'src/features/album/mp3_album_remote_repository_implemente.dart';
+import 'src/features/album/mp3_album_remote_repository_interface.dart';
 import 'src/utils/api_client.dart';
 
-class Album {
-static final Mp3AlbumBaseService _mp3albumBaseService = Mp3AlbumBaseService.instance;
+// class Album {
+// static final Mp3AlbumBaseService _mp3albumBaseService = Mp3AlbumBaseService.instance;
 
-  Future<List<Mp3Album>> fetchAlbumsList() async {
-      return await _mp3albumBaseService.fetchAlbums();
-  }
-  Future<Mp3Album> fetchAlbumBySlug(String slug) async {
-  return await _mp3albumBaseService.getAlbumBySlug(slug);
-  }
-  Future<List<Mp3Album>> fetchNextAlbum() async {
-    return await _mp3albumBaseService.fetchAlbumsNext();
-  }
+//   Future<List<Mp3Album>> fetchAlbumsList() async {
+//       return await _mp3albumBaseService.fetchAlbums();
+//   }
+//   Future<Mp3Album> fetchAlbumBySlug(String slug) async {
+//   return await _mp3albumBaseService.getAlbumBySlug(slug);
+//   }
+//   Future<List<Mp3Album>> fetchNextAlbum() async {
+//     return await _mp3albumBaseService.fetchAlbumsNext();
+//   }
 
-}
+// }
 
 
 class AlbumContrat extends Mp3AlbumServiceImpl {
@@ -52,7 +50,7 @@ class AlbumContrat extends Mp3AlbumServiceImpl {
 
   // Vous pouvez ajouter ici des méthodes spécifiques à Album
 
-  Future<void> downloadAlbum(String albumId) async {
+  Future<void> downloadAlbum(String albumSlug) async {
     // Implémentation de la logique de téléchargement
     // Vous pouvez utiliser _localRepository et _remoteRepository ici
   }

@@ -18,10 +18,12 @@ class Mp3Cover {
   });
 
   Mp3Cover copyWith({
+    int? id,
     String? max,
     String? min,
   }) =>
       Mp3Cover(
+        id: id ?? this.id,
         max: max ?? this.max,
         min: min ?? this.min,
       );
