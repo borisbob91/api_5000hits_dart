@@ -1,5 +1,3 @@
-import 'package:api_5000hits/album.dart';
-import 'package:api_5000hits/music.dart';
 import 'package:flutter/material.dart';
 import 'package:api_5000hits/api_5000hits.dart';
 

@@ -48,7 +48,6 @@ class AuthServiceImpl implements AuthService {
     return false;
   }
 
-
   @override
   Future<void> signOut() async {
     _remoteRepository.logOut();

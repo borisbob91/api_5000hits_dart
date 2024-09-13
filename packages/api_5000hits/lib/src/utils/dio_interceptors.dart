@@ -8,6 +8,7 @@ class ErrorInterceptor extends Interceptor {
 
   @override
   Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+    print('DioHttpError: ${err.response?.statusCode}');
     if (err.response?.statusCode == 401) {
       // final refreshed = false;
       // if (refreshed) {

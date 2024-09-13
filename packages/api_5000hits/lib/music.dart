@@ -5,9 +5,9 @@ import 'package:api_5000hits/src/features/music/mp3_music_local_repository_inter
 import 'package:api_5000hits/src/features/music/mp3_music_remote_implemente.dart';
 import 'package:api_5000hits/src/features/music/mp3_music_remote_interface.dart';
 import 'package:api_5000hits/src/features/music/mp3_music_service_implemente.dart';
+import 'package:api_5000hits/src/utils/api_client.dart';
 
 import 'src/core/databases/isar_manager.dart';
-import 'src/utils/api_client.dart';
 
 class Music implements Mp3MusicService{
   static final Mp3MusicBaseService _mp3musicBaseService= Mp3MusicBaseService();

@@ -26,7 +26,7 @@ class IsarManager {
   }
 
   Future<void> initialize() async {
-    print("Initial database mamanger");
+    print("Initial Isar mamanger");
     if (_isar != null) return;
 
     final dir = await getApplicationDocumentsDirectory();
@@ -38,8 +38,8 @@ class IsarManager {
 
   Isar get isar {
     if (_isar == null) {
-      // initialize();
-      throw StateError('Isar has not been initialized. Call initialize() first form isar manager.');
+       initialize();
+      // throw StateError('Isar has not been initialized. Call initialize() first form isar manager.');
     }
     return _isar!;
   }

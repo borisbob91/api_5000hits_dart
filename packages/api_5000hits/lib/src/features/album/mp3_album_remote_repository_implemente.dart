@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:api_5000hits/api_5000hits.dart';
+import 'package:api_5000hits/src/utils/api_client.dart';
 import 'package:dio/dio.dart';
 
 import '../../exceptions/album_exceptions.dart';
-import '../../utils/api_client.dart';
 import 'mp3_album_remote_repository_interface.dart';
 
 

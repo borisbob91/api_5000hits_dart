@@ -1,6 +1,6 @@
 import 'package:api_5000hits/src/features/video/mp3_video.dart';
 import 'package:api_5000hits/src/core/databases/isar_manager.dart';
-import 'package:api_5000hits/src/utils/api_client.dart';
+import 'package:api_5000hits/src/utils/api_client.xxxdart';
 
 import 'src/features/video/impl/mp3_video_local_repository_impl.dart';
 import 'src/features/video/impl/mp3_video_remote_repository_impl.dart';

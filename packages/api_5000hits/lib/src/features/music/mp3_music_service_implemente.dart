@@ -59,10 +59,8 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
     var music = await _localRepository.getMusicBySlug(slug);
     if (music == null) {
       music = await _remoteRepository.getMusicBySlug(slug);
-      if (music != null) {
-        await _localRepository.saveOrUpdateMusic(music);
-      }
-    }
+      await _localRepository.saveOrUpdateMusic(music);
+        }
     return music;
   }
 

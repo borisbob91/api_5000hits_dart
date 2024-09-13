@@ -4,6 +4,7 @@ class MusicSdk  with InitializationMixin{
   late final Music _music;
   late final AlbumContrat _albumContrat;
   late final MusicContrat _musicContrat;
+  late final AuthContrat _authContrat;
   static String _apiKey = "";
   bool _appInit = false;
 
@@ -18,6 +19,7 @@ class MusicSdk  with InitializationMixin{
     _music = Music();
     _albumContrat = AlbumContrat();
     _musicContrat = MusicContrat();
+    _authContrat =AuthContrat();
     return;
   }
 
@@ -25,8 +27,11 @@ class MusicSdk  with InitializationMixin{
   MusicSdk init({required String key}) {
     print("initialisation instance");
     _apiKey = key;
-    _verifyApiKey(key);
-    _appInit = true;
+    _appInit = _verifyApiKey(key);
+    if(_appInit){
+      print("initialisation ok");
+     ApiClient().setApiKey(key);
+    }
     return this;
   }
 
@@ -49,6 +54,12 @@ class MusicSdk  with InitializationMixin{
     }
     return null;
   }
+    AuthContrat? get auth{
+    if(checkInitialization()){
+      return _authContrat;
+    }
+    return null;
+  }
   
   static MusicSdk get instance {
 
@@ -56,14 +67,18 @@ class MusicSdk  with InitializationMixin{
   }
 
   bool _verifyApiKey(String key) {
-    print('***********  verification');
-    if(_apiKey.isEmpty){
+    print('*********Configuration de la clé API ***********');
+    List p = key.split('.');
+    print("************************************key len ${p.length}");
+    if(_apiKey.isEmpty && p.length != 2){
       throw AuthError( ApiErrorTypes.providerDeveloperApiKey.name, "Please provide a developer api key",);
     }
-    return false;
+    return true;
   }
 
   @override
   bool get appInit =>  _appInit;
 
 }
+
+

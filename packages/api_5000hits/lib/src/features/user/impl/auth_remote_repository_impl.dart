@@ -62,7 +62,7 @@ class AuthRemoteRepositoryImpl implements AuthRemoteRepository {
   @override
   Future<Mp3User> getUserProfile(String token) async {
     try {
-      final response = await _apiClient.get('/user/profile/', 
+      final response = await _apiClient.get('api/v1/users/profil/', 
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       return Mp3User.fromJson(response.data);
