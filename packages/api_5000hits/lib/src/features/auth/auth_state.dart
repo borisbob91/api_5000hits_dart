@@ -1,7 +1,7 @@
 
 // auth_state.dart
 
-import 'package:api_5000hits/src/features/user/mp3_user.dart';
+import 'package:api_5000hits/src/features/auth/mp3_user.dart';
 
 class AuthState {
   final bool isAuthenticated;

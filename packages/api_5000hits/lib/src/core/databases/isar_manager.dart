@@ -1,7 +1,7 @@
 import 'package:api_5000hits/src/features/album/mp3_album.dart';
 import 'package:api_5000hits/src/features/album/mp3_cover.dart';
-import 'package:api_5000hits/src/features/user/auth_model.dart';
-import 'package:api_5000hits/src/features/user/mp3_user.dart';
+import 'package:api_5000hits/src/features/auth/auth_model.dart';
+import 'package:api_5000hits/src/features/auth/mp3_user.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -12,7 +12,10 @@ class IsarManager {
   Isar? _isar;
 
   factory IsarManager() {
-    _instance ??= IsarManager._internal();
+    // _instance ??= IsarManager._internal();
+    if (_instance == null){
+      IsarManager._internal();
+    }
     return _instance!;
   }
 
@@ -30,12 +33,14 @@ class IsarManager {
   }
 
   Future<Isar> initialize() async {
-    if (_isar !=null){
+    if (_isar !=null || _isar!.isOpen){
       print("Isar is open! ^${_isar!.isOpen}");
       print("IsarManager is already initialized!");
       return _isar!;
+    }else{
+      print("Initial Isar mamanger");
     }
-    print("Initial Isar mamanger");
+
     final dir = await getApplicationDocumentsDirectory();
     _isar = await Isar.open(
       _schemas,

@@ -1,5 +1,5 @@
 import 'package:api_5000hits/src/core/databases/isar_manager.dart';
-import 'package:api_5000hits/src/features/user/impl/auth_local_repository_impl.dart';
+import 'package:api_5000hits/src/features/auth/impl/auth_local_repository_impl.dart';
 import 'package:api_5000hits/src/utils/dio_interceptors.dart';
 import 'package:dio/dio.dart';
 

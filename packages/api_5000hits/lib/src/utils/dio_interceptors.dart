@@ -1,7 +1,7 @@
 import 'package:api_5000hits/src/core/databases/isar_manager.dart';
-import 'package:api_5000hits/src/features/user/auth_local_repository.dart';
+import 'package:api_5000hits/src/features/auth/auth_local_repository.dart';
 import 'package:dio/dio.dart';
-import '../features/user/impl/auth_local_repository_impl.dart';
+import '../features/auth/impl/auth_local_repository_impl.dart';
 
 class ErrorInterceptor extends Interceptor {
   ErrorInterceptor();

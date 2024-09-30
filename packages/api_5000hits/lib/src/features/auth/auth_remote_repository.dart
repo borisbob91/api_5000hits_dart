@@ -1,6 +1,6 @@
 // auth_repository.dart
-import 'package:api_5000hits/src/features/user/auth_model.dart';
 
+import 'auth_model.dart';
 import 'mp3_user.dart';
 
 abstract class AuthRemoteRepository {

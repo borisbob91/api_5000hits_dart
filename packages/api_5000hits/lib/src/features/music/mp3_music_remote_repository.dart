@@ -7,7 +7,7 @@ import 'mp3_music.dart';
 /// MP3 music data, such as by artist, album, genre, and popularity. It also
 /// includes methods to fetch the next page of music results and retrieve
 /// statistics about the music data.
-abstract class Mp3MusicRemoteRepositoryInterface {
+abstract class Mp3MusicRemoteRepository {
   /// Fetches a list of [Mp3Music] objects based on the provided search criteria.
   ///
   /// The search criteria can include artist, slug, title, album, year, genre,

@@ -5,7 +5,7 @@ import 'package:api_5000hits/src/features/artist/mp3_artist.dart';
 import 'mp3_Artist_remote_repository_interface.dart';
 import 'artist_service_interface.dart';
 
-class Mp3ArtistServiceImpl implements Mp3ArtistServiceInterface {
+class Mp3ArtistServiceImpl implements Mp3ArtistService {
   final Mp3ArtistRemoteRepositoryInterface _remoteRepository;
 
   Mp3ArtistServiceImpl(this._remoteRepository);
@@ -27,8 +27,8 @@ class Mp3ArtistServiceImpl implements Mp3ArtistServiceInterface {
   }
 
   @override
-  Future<List<Mp3Album>> getArtistAlbums( {required String slug, int page = 1, int pageSize = 20}) async {
-    return await _remoteRepository.getArtistAlbums(slug:slug, limit: pageSize, page: page);
+  Future<List<Mp3Album>> getArtistAlbums( {required String slug, int page = 1, int limit = 20}) async {
+    return await _remoteRepository.getArtistAlbums(slug:slug, limit: limit, page: page);
   }
 
   @override

@@ -1,7 +1,6 @@
 part of 'api_5000hits.dart';
 
 class MusicSdk  with InitializationMixin{
-  late final Music _music;
   late final AlbumContrat _albumContrat;
   late final MusicContrat _musicContrat;
   late final AuthContrat _authContrat;
@@ -19,7 +18,6 @@ class MusicSdk  with InitializationMixin{
   }
 
   MusicSdk._internal(){
-      _music = Music();
       _albumContrat = AlbumContrat();
       _musicContrat = MusicContrat();
       _authContrat =AuthContrat();
@@ -39,13 +37,6 @@ class MusicSdk  with InitializationMixin{
     return this;
   }
 
-
-  Music? get music{
-    if (checkInitialization()){
-      return _music;
-    }
-    return null;
-  }
   AlbumContrat? get albumContrat{
     if(checkInitialization()){
       return _albumContrat;

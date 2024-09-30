@@ -2,7 +2,7 @@
 
 import 'auth_state.dart';
 
-abstract class AuthService {
+abstract interface class AuthService {
   Future<AuthState> signIn({
     required String email,
     required String password,

@@ -2,7 +2,7 @@ import 'package:api_5000hits/src/features/album/mp3_album.dart';
 import 'package:api_5000hits/src/features/music/mp3_music.dart';
 import 'package:api_5000hits/src/features/artist/mp3_artist.dart';
 
-abstract interface class Mp3ArtistServiceInterface {
+abstract interface class Mp3ArtistService {
   /// Récupère une liste paginée d'artistes.
   Future<List<Mp3Artist>> getArtists({int page = 0, int pageSize = 20,String? name,
     String? country, String? search});
@@ -11,7 +11,7 @@ abstract interface class Mp3ArtistServiceInterface {
   Future<Mp3Artist> getArtistDetails(String slug);
 
   /// Récupère les albums d'un artiste.
-  Future<List<Mp3Album>> getArtistAlbums({required String slug,int page = 0, int pageSize = 20});
+  Future<List<Mp3Album>> getArtistAlbums({required String slug,int page = 0, int limit = 20});
 
   /// Récupère les pistes d'un artiste.
   Future<List<Mp3Music>> getArtistTracks(String slug, {int page = 0, int pageSize = 20});

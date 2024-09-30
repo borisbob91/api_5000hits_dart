@@ -1,12 +1,12 @@
-import 'mp3_music.dart';
-import 'mp3_music_local_repository_interface.dart';
-import 'mp3_music_remote_interface.dart';
+import '../mp3_music.dart';
+import '../mp3_music_local_repository.dart';
+import '../mp3_music_remote_repository.dart';
 
-part 'mp3_music_service_interface.dart';
+part '../mp3_music_service.dart';
 
-class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
-  final Mp3MusicLocalRepositoryInterface _localRepository;
-  final Mp3MusicRemoteRepositoryInterface _remoteRepository;
+class Mp3MusicServiceImplemente implements Mp3MusicService {
+  final Mp3MusicLocalRepository _localRepository;
+  final Mp3MusicRemoteRepository _remoteRepository;
    String _route = "/api/v1/music";
   int _currentOffset = 0;
   bool _hasMoreData = true;

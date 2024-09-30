@@ -1,10 +1,10 @@
 import 'package:api_5000hits/src/core/databases/isar_manager.dart';
 import 'package:api_5000hits/src/features/album/mp3_cover.dart';
 import 'package:isar/isar.dart';
-import 'mp3_music.dart';
-import 'mp3_music_local_repository_interface.dart';
+import '../mp3_music.dart';
+import '../mp3_music_local_repository.dart';
 
-class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterface {
+class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepository {
 
   final IsarManager isarManager;
   Mp3MusicLocalRepositoryImplemente({required this.isarManager}){
@@ -17,7 +17,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   Isar get isar => isarManager.isar;
 
   @override
-  Future<List<Mp3Music>> getAllMusic({int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getAllMusic({int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .where()
         .offset(page * pageSize)
@@ -64,7 +64,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> searchMusic(String searchTerm, {int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> searchMusic(String searchTerm, {int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .filter()
         .titleContains(searchTerm, caseSensitive: false)
@@ -88,7 +88,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByPage({int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getMusicByPage({int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .where()
         .offset(page * pageSize)
@@ -97,7 +97,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByGenre(String genre, {int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getMusicByGenre(String genre, {int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .filter()
         .genreEqualTo(genre)
@@ -107,7 +107,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByArtist(String artist, {int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getMusicByArtist(String artist, {int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .filter()
         .artistEqualTo(artist)
@@ -117,7 +117,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getRecentMusic({int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getRecentMusic({int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .where()
         .sortByUploadedDesc()
@@ -127,7 +127,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getPopularMusic({int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getPopularMusic({int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .where()
         .sortByHitsDesc()
@@ -137,7 +137,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByCountry(int countryCode, {int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getMusicByCountry(int countryCode, {int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .filter()
         .countryEqualTo(countryCode)
@@ -147,7 +147,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByYearRange(String startYear, String endYear, {int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getMusicByYearRange(String startYear, String endYear, {int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .filter()
         .yearBetween(startYear, endYear)
@@ -157,7 +157,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   }
 
   @override
-  Future<List<Mp3Music>> getSimilarMusic(Mp3Music music, {int page = 0, int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE}) async {
+  Future<List<Mp3Music>> getSimilarMusic(Mp3Music music, {int page = 0, int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE}) async {
     return await isar.mp3Musics
         .filter()
         .genreEqualTo(music.genre ?? '')
@@ -176,7 +176,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
     required int minDownloads,
     int maxDays = 60,
     int page = 0,
-    int pageSize = Mp3MusicLocalRepositoryInterface.DEFAULT_PAGE_SIZE,
+    int pageSize = Mp3MusicLocalRepository.DEFAULT_PAGE_SIZE,
   }) async {
     final startDate = DateTime.now().subtract(Duration(days: maxDays));
     return await isar.mp3Musics

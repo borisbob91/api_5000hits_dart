@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:api_5000hits/src/utils/api_client.dart';
 import 'package:dio/dio.dart';
 
-import 'mp3_music.dart';
-import 'mp3_music_remote_interface.dart';
+import '../mp3_music.dart';
+import '../mp3_music_remote_repository.dart';
 
 
-class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepositoryInterface {
+class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
   late final ApiClient _apiClient;
   final  String _route = '/api/v1/musics';
   String? _nextPageUrl;
@@ -156,5 +156,11 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepositoryInter
     var count = respnseData['count'];
     return  data.map((json) => Mp3Music.fromJson(json)).toList();
   }
-
+  
+  Map<String, dynamic> _extractOffsetAndLimit(String url) {
+    Uri uri = Uri.parse(url);
+    int offset = int.tryParse(uri.queryParameters['offset'] ?? '') ?? 0;
+    int limit = int.tryParse(uri.queryParameters['limit'] ?? '') ?? 100; // Valeur par défaut si limit n'est pas spécifié
+    return {'offset': offset, 'limit': limit};
+  }
 }

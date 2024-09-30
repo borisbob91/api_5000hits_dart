@@ -5,7 +5,7 @@ import 'mp3_music.dart';
 ///
 /// This interface provides methods for interacting with the local storage of MP3 music data, including
 /// retrieving, saving, updating, and deleting music tracks.
-abstract class Mp3MusicLocalRepositoryInterface {
+abstract interface class Mp3MusicLocalRepository {
   /// The default page size for pagination.
   static const int DEFAULT_PAGE_SIZE = 20;
 
