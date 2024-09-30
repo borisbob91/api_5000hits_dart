@@ -50,7 +50,7 @@ Future<List<Mp3Album>> _paginateQWhereQuery(
  @override
   Future<void> saveAlbum(Mp3Album album) async {
     bool exist = await albumExists(album.slug);
-    print("album with slug ${album.slug} exist : $exist");
+    // print("album with slug ${album.slug} exist : $exist");
     if (exist) {
       await updateAlbum(album);
     } else {
@@ -69,7 +69,7 @@ Future<List<Mp3Album>> _paginateQWhereQuery(
   @override
   Future<void> saveAlbums(List<Mp3Album> albums) async {
     for (var album in albums) {
-       saveAlbum(album);
+      await saveAlbum(album);
     }
   }
 

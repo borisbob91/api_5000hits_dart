@@ -25,6 +25,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   Future<List<Mp3Album>> _decodeResponse(Response<dynamic> response) async {
     final respnseData = jsonDecode(response.toString());
     final List<dynamic> data = respnseData['results'];
+    print('results: $data');
     nextPage = respnseData['next'];
     count = respnseData['count'];
     return  data.map((json) => Mp3Album.fromJson(json)).toList();
@@ -119,10 +120,14 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
 
   
   @override
-  Future<List<Mp3Album>> mostDownloadAlbums() async{
+  Future<List<Mp3Album>> fetchMostDownloadAlbums({int page = 1, int pageSize = 20}) async{
     // TODO: implement mostDownloadAlbums
     try {
-      final response = await apiClient.get('$route/most-downloaded/');
+      final response = await apiClient.get('$route/most-downloaded/', queryParameters: {
+        'page':page,
+        'pageSize':pageSize,
+        'size':pageSize
+      });
       return _decodeResponse(response);
     } catch (error) {
       throw AlbumFetchException('Failed to fetch most downloaded album: $error');
@@ -130,7 +135,7 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   }
   
   @override
-  Future<List<Mp3Album>> popularsAlbums({int page = 1, int pageSize = 20}) async{
+  Future<List<Mp3Album>> fetchPopularsAlbums({int page = 1, int pageSize = 20}) async{
     // TODO: implement popularsAlbums
       try {
       final response = await apiClient.get('$route/populars/', queryParameters: {
@@ -145,13 +150,26 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
   }
   
   @override
-  Future<List<Mp3Album>> simularsMusics(String slug, {int page = 0, int pageSize = 20}) async{
+  Future<List<Mp3Album>> fetchSimularsAlbums(String slug, {int page = 0, int pageSize = 20}) async{
     // TODO: implement simularsMusics
+    print('********** simulars albums');
       try {
       final response = await apiClient.get('$route/$slug/simulars/');
       return _decodeResponse(response);
     } catch (error) {
-      throw AlbumFetchException('Failed to fetch asimulars lbum: $error');
+      throw AlbumFetchException('Failed to fetch asimulars album: $error');
+    }
+  }
+
+  @override
+  Future<List<Mp3Album>> fetchArtistAlbum({required String albumSlug}) async {
+    try {
+      final response = await apiClient.get('$route/$albumSlug/artist/');
+      print("***********************artist albums fetch***********");
+      print(response.data);
+      return _decodeResponse(response);
+    } catch (error) {
+      throw AlbumFetchException('Failed to fetch album of artist: $error');
     }
   }
 

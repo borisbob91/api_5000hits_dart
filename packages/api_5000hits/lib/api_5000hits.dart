@@ -1,12 +1,14 @@
 library api_5000hits;
 
 import 'package:api_5000hits/album.dart';
+import 'package:api_5000hits/artist.dart';
 import 'package:api_5000hits/auth.dart';
 import 'package:api_5000hits/music.dart';
 import 'package:api_5000hits/src/exceptions/auth_error.dart';
 import 'package:api_5000hits/src/exceptions/error_types.dart';
 import 'package:api_5000hits/src/mixins/mixins.dart';
 
+import 'lyric.dart';
 import 'src/utils/api_client.dart';
 
 export 'package:api_5000hits/src/features/album/mp3_album.dart' show Mp3Album;

@@ -9,7 +9,7 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
   final IsarManager isarManager;
   Mp3MusicLocalRepositoryImplemente({required this.isarManager}){
     // Initialize IsarManager
-    isarManager.initialize();
+    //isarManager.initialize();
     isarManager.addSchema(Mp3MusicSchema);
   }
 
@@ -32,29 +32,27 @@ class Mp3MusicLocalRepositoryImplemente implements Mp3MusicLocalRepositoryInterf
 
   @override
   Future<void> saveOrUpdateMusic(Mp3Music music) async {
-    
-    final existingMusic = await getMusicBySlug(music.slug);
-    if (existingMusic != null) {
-      music.id = existingMusic.id;
-      music.cover.value!.id = existingMusic.cover.value!.id!;
-    }
+
     await isar.writeTxn(() async {
       await isar.mp3Covers.put(music.cover.value!);
       await isar.mp3Musics.put(music);
+      music.cover.save();
+
     });
   }
 
   @override
   Future<void> saveMusics(List<Mp3Music> musics) async {
-    await isar.writeTxn(() async {
-      await isar.mp3Musics.putAll(musics);
+    musics.map((toElement)async{
+      await saveOrUpdateMusic(toElement);
     });
   }
 
   @override
-  Future<void> deleteMusic(Id id) async {
+  Future<void> deleteMusic({required String slug}) async {
+   final found = await this.getMusicBySlug(slug);
     await isar.writeTxn(() async {
-      await isar.mp3Musics.delete(id);
+      await isar.mp3Musics.delete(found!.id);
     });
   }
 

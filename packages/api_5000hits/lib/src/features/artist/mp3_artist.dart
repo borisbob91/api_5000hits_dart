@@ -3,8 +3,13 @@
 //     final Mp3Artist = Mp3ArtistFromJson(jsonString);
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
+
+part 'mp3_artist.g.dart';
+
+@collection
 class Mp3Artist {
-  final int? id;
+   Id? id = Isar.autoIncrement;
   final String? slug;
   final String? name;
   final String? photo;

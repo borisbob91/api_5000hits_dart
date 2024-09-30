@@ -8,7 +8,7 @@ class AuthLocalRepositoryImpl implements AuthLocalRepository {
   final IsarManager _isarManager;
 
   AuthLocalRepositoryImpl(this._isarManager){
-    _isarManager.initialize();
+    // _isarManager.initialize();
     //_isarManager.addSchema(TokenSchema);
   }
 

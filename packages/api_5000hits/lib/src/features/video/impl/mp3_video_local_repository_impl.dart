@@ -7,7 +7,7 @@ class Mp3VideoLocalRepositoryImpl implements Mp3VideoLocalRepository {
   final IsarManager isarManager;
 
   Mp3VideoLocalRepositoryImpl({required this.isarManager}) {
-    isarManager.initialize();
+    // isarManager.initialize();
     isarManager.addSchema(Mp3VideoSchema);
   }
 
@@ -35,7 +35,7 @@ class Mp3VideoLocalRepositoryImpl implements Mp3VideoLocalRepository {
   }
 
   @override
-  Future<void> saveVideos(List<Mp3Video> videos) async {
+  Future<void> saveOrUpdateVideos(List<Mp3Video> videos) async {
     await isar.writeTxn(() async {
       await isar.mp3Videos.putAll(videos);
     });

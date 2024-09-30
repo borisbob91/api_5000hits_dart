@@ -6,17 +6,21 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class IsarManager {
-  static final IsarManager _instance = IsarManager._internal();
-  
+  // static final IsarManager _instance = IsarManager._internal();
+  static  IsarManager? _instance;
+
+  Isar? _isar;
+
   factory IsarManager() {
-    return _instance;
+    _instance ??= IsarManager._internal();
+    return _instance!;
   }
 
   IsarManager._internal(){
     initialize();
   }
 
-  Isar? _isar;
+
   final List<CollectionSchema<dynamic>> _schemas = [Mp3AlbumSchema, Mp3CoverSchema, Mp3UserSchema, TokenSchema];
 
   void addSchema<T>(CollectionSchema<T> schema) {
@@ -25,21 +29,26 @@ class IsarManager {
     }
   }
 
-  Future<void> initialize() async {
+  Future<Isar> initialize() async {
+    if (_isar !=null){
+      print("Isar is open! ^${_isar!.isOpen}");
+      print("IsarManager is already initialized!");
+      return _isar!;
+    }
     print("Initial Isar mamanger");
-    if (_isar != null) return;
-
     final dir = await getApplicationDocumentsDirectory();
     _isar = await Isar.open(
       _schemas,
       directory: dir.path,
     );
+    return _isar!;
   }
 
   Isar get isar {
     if (_isar == null) {
        initialize();
       // throw StateError('Isar has not been initialized. Call initialize() first form isar manager.');
+      return _isar!;
     }
     return _isar!;
   }

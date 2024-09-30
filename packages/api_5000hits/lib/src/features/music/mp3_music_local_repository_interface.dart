@@ -34,8 +34,8 @@ abstract class Mp3MusicLocalRepositoryInterface {
 
   /// Deletes a music track by its ID.
   ///
-  /// [id] the ID of the music track to delete
-  Future<void> deleteMusic(Id id);
+  /// [slug] the Slug of the music track to delete
+  Future<void> deleteMusic({required String slug});
 
   /// Deletes all music tracks.
   Future<void> deleteAllMusic();

@@ -6,21 +6,6 @@ import 'src/features/album/mp3_album_local_repository_interface.dart';
 import 'src/features/album/mp3_album_remote_repository_implemente.dart';
 import 'src/features/album/mp3_album_remote_repository_interface.dart';
 
-// class Album {
-// static final Mp3AlbumBaseService _mp3albumBaseService = Mp3AlbumBaseService.instance;
-
-//   Future<List<Mp3Album>> fetchAlbumsList() async {
-//       return await _mp3albumBaseService.fetchAlbums();
-//   }
-//   Future<Mp3Album> fetchAlbumBySlug(String slug) async {
-//   return await _mp3albumBaseService.getAlbumBySlug(slug);
-//   }
-//   Future<List<Mp3Album>> fetchNextAlbum() async {
-//     return await _mp3albumBaseService.fetchAlbumsNext();
-//   }
-
-// }
-
 
 class AlbumContrat extends Mp3AlbumServiceImpl {
   static AlbumContrat? _instance;

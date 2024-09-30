@@ -17,7 +17,8 @@ class AlbumDetailPage extends StatelessWidget {
     };
   }
    Future<List<Mp3Album>> _fetchArtistAlbums(Mp3Album mp3) async {
-    final fetchedAlbums = await musicSdk.albumContrat?.getAlbumsByArtist(mp3.artist);
+    // final fetchedAlbums = await musicSdk.albumContrat?.getAlbumsByArtist(mp3.artist, country: mp3.country!);
+    final fetchedAlbums = await musicSdk.albumContrat?.getArtistAlbumBySlug(albumSlug: mp3.slug);
     return fetchedAlbums ?? [];
   }
 
@@ -92,6 +93,7 @@ class AlbumHeader extends StatelessWidget {
         Text('Artist: ${album.artist}', style: Theme.of(context).textTheme.titleSmall),
         Text('Track Number: ${album.tracksNb}', style: Theme.of(context).textTheme.titleSmall),
         Text("Year: ${album.year}", style: Theme.of(context).textTheme.titleSmall),
+        Text("genre: ${album.genre}", style: Theme.of(context).textTheme.titleSmall),
       ],
     );
   }

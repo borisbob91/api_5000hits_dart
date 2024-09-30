@@ -45,7 +45,7 @@ abstract class Mp3MusicRemoteRepositoryInterface {
   /// Retrieves a list of the most popular music.
   ///
   /// The results are limited to the specified limit and offset.
-  Future<List<Mp3Music>> getPopularMusic({int limit = 20, int offset = 0});
+  Future<List<Mp3Music>> getPopularMusic({ int limit = 20, int page = 1});
 
   /// Retrieves a list of the most recently added music.
   ///
@@ -56,6 +56,11 @@ abstract class Mp3MusicRemoteRepositoryInterface {
   ///
   /// The results are limited to the specified limit and offset.
   Future<List<Mp3Music>> getMusicByArtist(String artist, {int limit = 20, int offset = 0});
+
+  /// Retrieves a list of music by the specified artist.
+  ///
+  /// The results are limited to the specified limit and offset.
+  Future<List<Mp3Music>> getMusicForArtistBySlug( { required String musicSlug,int limit = 20, int page = 1});
 
   /// Retrieves a list of music from the specified album.
   ///
@@ -70,7 +75,7 @@ abstract class Mp3MusicRemoteRepositoryInterface {
   /// Retrieves a list of music that is similar to the specified music.
   ///
   /// The results are limited to the specified limit.
-  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20});
+  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20, int page=1});
 
   /// Determines whether there are more music results that can be fetched.
   bool canFetchNext();

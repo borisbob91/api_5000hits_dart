@@ -1,14 +1,16 @@
+import 'package:api_5000hits_dart/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:api_5000hits/api_5000hits.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'album_list.dart';
 
-class AlbumListByGenrePage extends StatefulWidget {
+class AlbumListByGenrePage extends ConsumerStatefulWidget {
   @override
   _AlbumListPageState createState() => _AlbumListPageState();
 }
 
-class _AlbumListPageState extends State<AlbumListByGenrePage> {
+class _AlbumListPageState extends ConsumerState<AlbumListByGenrePage> {
   final MusicSdk _musicSdk = MusicSdk.instance;
   List<Mp3Album> _albums = [];
   bool _isLoading = false;
@@ -18,6 +20,7 @@ class _AlbumListPageState extends State<AlbumListByGenrePage> {
 
   @override
   void initState() {
+
     super.initState();
     _fetchAlbums();
     _scrollController.addListener(_onScroll);
@@ -25,6 +28,7 @@ class _AlbumListPageState extends State<AlbumListByGenrePage> {
 
   @override
   void dispose() {
+
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
@@ -46,6 +50,7 @@ class _AlbumListPageState extends State<AlbumListByGenrePage> {
     try {
       List<Mp3Album> result;
       if (_selectedGenre == 'ALL') {
+
         result = await _musicSdk.albumContrat?.getAlbums(page: _currentPage) ?? [];
       } else {
         result = await _musicSdk.albumContrat?.getAlbumsByGenre(_selectedGenre, page: _currentPage) ?? [];

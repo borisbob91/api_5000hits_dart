@@ -5,30 +5,34 @@ class MusicSdk  with InitializationMixin{
   late final AlbumContrat _albumContrat;
   late final MusicContrat _musicContrat;
   late final AuthContrat _authContrat;
+  late final ArtistContrat _artistContrat;
+  late final LyricContrat _lyricContrat;
+
   static String _apiKey = "";
   bool _appInit = false;
 
   static final MusicSdk _instance = MusicSdk._internal();
 
   factory MusicSdk() {
-    print("***************sdk factory initialisatin:");
+    print("*************** SDK factory initialisatin *************************");
     return _instance;
   }
 
   MusicSdk._internal(){
-    _music = Music();
-    _albumContrat = AlbumContrat();
-    _musicContrat = MusicContrat();
-    _authContrat =AuthContrat();
-    return;
+      _music = Music();
+      _albumContrat = AlbumContrat();
+      _musicContrat = MusicContrat();
+      _authContrat =AuthContrat();
+      _artistContrat = ArtistContrat();
+      return;
   }
 
 
   MusicSdk init({required String key}) {
-    print("initialisation instance");
-    _apiKey = key;
     _appInit = _verifyApiKey(key);
+    print('**********object $_appInit ***********');
     if(_appInit){
+      _apiKey = key;
       print("initialisation ok");
      ApiClient().setApiKey(key);
     }
@@ -60,18 +64,31 @@ class MusicSdk  with InitializationMixin{
     }
     return null;
   }
-  
+
+  ArtistContrat? get artist{
+    if(checkInitialization()){
+      return _artistContrat;
+    }
+    return null;
+  }
+
+  LyricContrat? get lyricContrat {
+    if (checkInitialization()) {
+      return _lyricContrat;
+    }
+    return null;
+  }
+
   static MusicSdk get instance {
 
     return _instance;
   }
 
-  bool _verifyApiKey(String key) {
-    print('*********Configuration de la clé API ***********');
+  bool _verifyApiKey(key) {
+    print('*********Configuration de la clé API ***********$key');
     List p = key.split('.');
-    print("************************************key len ${p.length}");
-    if(_apiKey.isEmpty && p.length != 2){
-      throw AuthError( ApiErrorTypes.providerDeveloperApiKey.name, "Please provide a developer api key",);
+    if(p.length != 2){
+      throw SdkException( ApiErrorTypes.providerDeveloperApiKey.name, "Please provide a developer api key");
     }
     return true;
   }

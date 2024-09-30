@@ -1,17 +1,14 @@
 import 'mp3_video.dart';
 
-abstract class Mp3VideoService {
-  Future<void> initialize();
-  Future<List<Mp3Video>> getNextPage();
+abstract interface class Mp3VideoService {
+  // Future<List<Mp3Video>> getNextPage();
   void resetPagination();
-  Future<bool> hasMore();
-  Future<List<Mp3Video>> searchVideos(String query, {int limit = 20, int offset = 0});
-  Future<Mp3Video?> getVideoByYtId(String ytId);
-  Future<List<Mp3Video>> getPopularVideos({int limit = 20, int offset = 0});
-  Future<List<Mp3Video>> getRecentVideos({int limit = 20, int offset = 0});
+  Future<List<Mp3Video>> fetchVideos( {String? searchQuery, String? title, String? artist,  String? genre, int? country, int limit = 20, int page = 1});
+  Future<List<Mp3Video>> searchVideos(String query, {int limit = 20, int page = 1});
+  Future<List<Mp3Video>> getVideosByArtist(String artist, {int limit = 20, int page = 1});
+  Future<Mp3Video?> getVideoBySlug({required String slug});
   Future<void> syncData();
   Future<void> clearCache();
-  Future<bool> needsUpdate();
+  Future<void> saveVideo({required Mp3Video video});
   Future<void> preloadCache();
-  Future<Mp3Video?> getVideoTrack(int videoId);
 }

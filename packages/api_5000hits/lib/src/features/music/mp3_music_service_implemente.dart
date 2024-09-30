@@ -7,7 +7,7 @@ part 'mp3_music_service_interface.dart';
 class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
   final Mp3MusicLocalRepositoryInterface _localRepository;
   final Mp3MusicRemoteRepositoryInterface _remoteRepository;
-  
+   String _route = "/api/v1/music";
   int _currentOffset = 0;
   bool _hasMoreData = true;
   static const int _batchSize = 100;
@@ -22,7 +22,7 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
 
   @override
   Future<List<Mp3Music>> getNextPage() async {
-    final localMusic = await _localRepository.getMusicByPage(page: _currentOffset ~/ _pageSize, pageSize: _pageSize);
+    final localMusic = await _localRepository.getMusicByPage(page: _currentOffset , pageSize: _pageSize);
     
     if (localMusic.length < _pageSize && _hasMoreData) {
       await _fetchAndStoreMusic();
@@ -45,17 +45,13 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
 
   @override
   Future<List<Mp3Music>> searchMusic(String query, {int limit = 20, int offset = 0}) async {
-    var localResults = await _localRepository.searchMusic(query, page: offset ~/ limit, pageSize: limit);
-    if (localResults.length < limit) {
       final remoteResults = await _remoteRepository.searchMusic(query, limit: limit, offset: offset);
       await _localRepository.saveMusics(remoteResults);
-      localResults = await _localRepository.searchMusic(query, page: offset ~/ limit, pageSize: limit);
-    }
-    return localResults;
+    return remoteResults;
   }
 
   @override
-  Future<Mp3Music?> getMusicBySlug(String slug) async {
+  Future<Mp3Music?> getMusicDetails({required String slug}) async {
     var music = await _localRepository.getMusicBySlug(slug);
     if (music == null) {
       music = await _remoteRepository.getMusicBySlug(slug);
@@ -65,14 +61,10 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
   }
 
   @override
-  Future<List<Mp3Music>> getPopularMusic({int limit = 20, int offset = 0}) async {
-    var localResults = await _localRepository.getPopularMusic(page: offset ~/ limit, pageSize: limit);
-    if (localResults.length < limit) {
-      final remoteResults = await _remoteRepository.getPopularMusic(limit: limit, offset: offset);
-      await _localRepository.saveMusics(remoteResults);
-      localResults = await _localRepository.getPopularMusic(page: offset ~/ limit, pageSize: limit);
-    }
-    return localResults;
+  Future<List<Mp3Music>> getPopularMusic({ int limit = 20, int page = 1}) async {
+    List<Mp3Music> remoteResults = await _remoteRepository.getPopularMusic(limit: limit, page: page);
+    await _localRepository.saveMusics(remoteResults);
+    return remoteResults;
   }
 
   @override
@@ -88,11 +80,11 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
 
   @override
   Future<List<Mp3Music>> getMusicByArtist(String artist, {int limit = 20, int offset = 0}) async {
-    var localResults = await _localRepository.getMusicByArtist(artist, page: offset ~/ limit, pageSize: limit);
+    //var localResults = await _localRepository.getMusicByArtist(artist, page: offset ~/ limit, pageSize: limit);
+    List<Mp3Music> localResults = [];
     if (localResults.length < limit) {
-      final remoteResults = await _remoteRepository.getMusicByArtist(artist, limit: limit, offset: offset);
-      await _localRepository.saveMusics(remoteResults);
-      localResults = await _localRepository.getMusicByArtist(artist, page: offset ~/ limit, pageSize: limit);
+      localResults = await _remoteRepository.getMusicByArtist(artist, limit: limit, offset: offset);
+      await _localRepository.saveMusics(localResults);
     }
     return localResults;
   }
@@ -112,24 +104,37 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
 
   @override
   Future<List<Mp3Music>> getMusicByGenre(String genre, {int limit = 20, int offset = 0}) async {
-    var localResults = await _localRepository.getMusicByGenre(genre, page: offset ~/ limit, pageSize: limit);
-    if (localResults.length < limit) {
-      final remoteResults = await _remoteRepository.getMusicByGenre(genre, limit: limit, offset: offset);
-      await _localRepository.saveMusics(remoteResults);
-      localResults = await _localRepository.getMusicByGenre(genre, page: offset ~/ limit, pageSize: limit);
-    }
-    return localResults;
+    print('******** offset: $offset $limit');
+    List<Mp3Music> remoteResults = await _remoteRepository.getMusicByGenre(genre, limit: limit, offset: offset);
+    await _localRepository.saveMusics(remoteResults);
+    return remoteResults;
   }
 
   @override
-  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20}) async {
-    final music = await getMusicBySlug(musicSlug);
+  Future<List<Mp3Music>> getSimilarMusic({required String musicSlug, int limit = 20}) async {
+    final music = await getMusicDetails(slug: musicSlug);
     if (music != null) {
-      return _localRepository.getSimilarMusic(music, page: 0, pageSize: limit);
+      //return _localRepository.getSimilarMusic(music, page: 0, pageSize: limit);
+      return _remoteRepository.getSimilarMusic(musicSlug, limit: limit, );
     }
     return [];
   }
 
+
+
+
+
+  Future<void> _fetchAndStoreMusic() async {
+    final remoteMusic = await _remoteRepository.fetchMusic(limit: _batchSize, offset: _currentOffset);
+    await _localRepository.saveMusics(remoteMusic);
+    _currentOffset += remoteMusic.length;
+    _hasMoreData = remoteMusic.length == _batchSize;
+  }
+
+  @override
+  Future<List<Mp3Music>> getMusics({String? artist, String? name, String? year, String? genre, String? label, int? country, String? search, int? limit, int? offset}) async{
+   return await _remoteRepository.fetchMusic(artist: artist,  year: year, genre: genre, country: country,  limit: limit, offset: offset, search: search);
+  }
   @override
   Future<void> syncData() async {
     final remoteMusic = await _remoteRepository.fetchMusic(limit: _batchSize, offset: 0);
@@ -157,24 +162,10 @@ class Mp3MusicServiceImplemente implements Mp3MusicServiceInterface {
   }
 
   @override
-  Future<Map<String, dynamic>> getMusicDetails(String slug) async {
-    final music = await getMusicBySlug(slug);
-    if (music != null) {
-      // Here you might want to fetch additional details from the remote repository
-      // and combine them with the local data
-      final additionalDetails = await _remoteRepository.getMusicBySlug(slug);
-      return {
-        ...music.toJson(),
-        ...additionalDetails.toJson(),
-      };
-    }
-    return {};
-  }
+  String get route => _route;
 
-  Future<void> _fetchAndStoreMusic() async {
-    final remoteMusic = await _remoteRepository.fetchMusic(limit: _batchSize, offset: _currentOffset);
-    await _localRepository.saveMusics(remoteMusic);
-    _currentOffset += remoteMusic.length;
-    _hasMoreData = remoteMusic.length == _batchSize;
+  @override
+  Future<List<Mp3Music>> getMusicOfArtist({required musicSlug, int limit = 20, int page = 1}) async{
+    return await _remoteRepository.getMusicForArtistBySlug(musicSlug: musicSlug, limit: limit, page:page);
   }
 }

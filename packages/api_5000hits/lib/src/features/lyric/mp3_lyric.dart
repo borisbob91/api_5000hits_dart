@@ -1,40 +1,67 @@
-// To parse this JSON data, do
-//
-//     final Mp3Lyric = Mp3LyricFromJson(jsonString);
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
+
+import 'format_lyric_text.dart';
+
+part 'mp3_lyric.g.dart';
+
+@collection
 class Mp3Lyric {
-  final int? id;
-  final DateTime? added;
+  Id? id = Isar.autoIncrement;
   final String? title;
-  final String? addedBy;
-  final String? ytId;
+  final String? cover;
   final int? views;
+
+  @Index(type: IndexType.value)
+  final String? genre;
+
+  @Index(type: IndexType.value)
+  final String? artist;
+
+  final String? text;
+  final DateTime? added;
+  final String? addedBy;
+
+  @Index(unique: true, replace: true, type: IndexType.value)
+  final String? songSlug;
 
   Mp3Lyric({
     this.id,
-    this.added,
     this.title,
-    this.addedBy,
-    this.ytId,
+    this.cover,
     this.views,
+    this.genre,
+    this.artist,
+    this.text,
+    this.added,
+    this.addedBy,
+    this.songSlug
   });
 
   Mp3Lyric copyWith({
     int? id,
-    DateTime? added,
     String? title,
-    String? addedBy,
-    String? ytId,
+    String? cover,
     int? views,
+    String? genre,
+    String? artist,
+    String? text,
+    DateTime? added,
+    String? addedBy,
+    String? songSlug,
   }) =>
       Mp3Lyric(
         id: id ?? this.id,
-        added: added ?? this.added,
         title: title ?? this.title,
-        addedBy: addedBy ?? this.addedBy,
-        ytId: ytId ?? this.ytId,
+        cover: cover ?? this.cover,
         views: views ?? this.views,
+        genre: genre ?? this.genre,
+        artist: artist ?? this.artist,
+        text: text ?? this.text,
+        added: added ?? this.added,
+        addedBy: addedBy ?? this.addedBy,
+        songSlug: songSlug ?? this.songSlug,
       );
 
   factory Mp3Lyric.fromRawJson(String str) =>
@@ -44,19 +71,27 @@ class Mp3Lyric {
 
   factory Mp3Lyric.fromJson(Map<String, dynamic> json) => Mp3Lyric(
     id: json["id"],
-    added: json["added"] == null ? null : DateTime.parse(json["added"]),
     title: json["title"],
-    addedBy: json["added_by"],
-    ytId: json["yt_id"],
+    cover: json["cover"],
     views: json["views"],
+    genre: json["genre"],
+    artist: json["artist"],
+    text: json["text"] == null ? null : FormatLyricsExtension.formatLyrics(json["text"]),
+    added: json["added"] == null ? null : DateTime.parse(json["added"]),
+    addedBy: json["added_by"],
+    songSlug: json["song_slug"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "added": added?.toIso8601String(),
     "title": title,
-    "added_by": addedBy,
-    "yt_id": ytId,
+    "cover": cover,
     "views": views,
+    "genre": genre,
+    "artist": artist,
+    "text": text,
+    "added": added?.toIso8601String(),
+    "added_by": addedBy,
+    'song_slug': songSlug,
   };
 }

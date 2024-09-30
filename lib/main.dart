@@ -1,13 +1,23 @@
 import 'package:api_5000hits/api_5000hits.dart';
-import 'package:api_5000hits_dart/album_detail.dart';
-import 'package:api_5000hits_dart/album_gender.dart';
-import 'package:api_5000hits_dart/album_list.dart';
+import 'package:api_5000hits_dart/albums/album_detail.dart';
+import 'package:api_5000hits_dart/albums/album_gender.dart';
+import 'package:api_5000hits_dart/albums/album_list.dart';
 import 'package:api_5000hits_dart/music_detail.dart';
+import 'package:api_5000hits_dart/albums/populare_albums.dart';
+import 'package:api_5000hits_dart/albums/top_download_album.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'albums/album_search.dart';
+import 'download_page.dart';
 
 
 void main() {
-  runApp( MyApp());
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -98,12 +108,39 @@ class _MyHomePageState extends State<MyHomePage> {
               }));
 
             }, child: Text('Album List')),
+
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return AlbumListByGenrePage();
               }));
 
             }, child: Text('Album genre')),
+
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return PopulareAlbums();
+              }));
+
+            }, child: Text('Album Populars ')),
+
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return TopDownloadAlbum();
+              }));
+
+            }, child: Text('Album top 100')),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return DownloadsPage();
+              }));
+
+            }, child: Text('download page')),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return AlbumSearchPage();
+              }));
+
+            }, child: Text('Album search')),
           ],
       ),),)
     );

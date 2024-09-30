@@ -1,6 +1,20 @@
 part of 'mp3_music_service_implemente.dart';
 
 abstract class Mp3MusicServiceInterface {
+  final String route= '/api/v1/musics';
+  // Album-related methods
+  Future<List<Mp3Music>> getMusics({
+    String? artist,
+    String? name,
+    String? year,
+    String? genre,
+    String? label,
+    int? country,
+    String? search,
+    int? limit,
+    int? offset,
+  });
+
   /// Initializes the service by fetching the first batch of music from the server
   /// and storing it locally.
   Future<void> initialize();
@@ -22,16 +36,24 @@ abstract class Mp3MusicServiceInterface {
 
   /// Retrieves a specific music track by its slug.
   /// Checks local cache first, then fetches from server if not found.
-  Future<Mp3Music?> getMusicBySlug(String slug);
+  // Future<Mp3Music?> getMusicBySlug(String slug);
+
+
+  /// Retrieves detailed information about a specific music track.
+  /// This might include additional data not stored in the basic Mp3Music object.
+  Future<Mp3Music?> getMusicDetails({required String slug});
 
   /// Retrieves a list of popular music tracks.
-  Future<List<Mp3Music>> getPopularMusic({int limit = 20, int offset = 0});
+  Future<List<Mp3Music>> getPopularMusic({int limit = 20, int page = 1});
 
   /// Retrieves a list of recently added music tracks.
   Future<List<Mp3Music>> getRecentMusic({int limit = 20, int offset = 0});
 
   /// Retrieves a list of music tracks by a specific artist.
   Future<List<Mp3Music>> getMusicByArtist(String artist, {int limit = 20, int offset = 0});
+
+  /// Retrieves a list of music tracks by a specific artist.
+  Future<List<Mp3Music>> getMusicOfArtist({required musicSlug, int limit = 20, int page = 1});
 
   /// Retrieves a list of music tracks from a specific album.
   Future<List<Mp3Music>> getMusicByAlbum(String album, {int limit = 20, int offset = 0});
@@ -40,7 +62,7 @@ abstract class Mp3MusicServiceInterface {
   Future<List<Mp3Music>> getMusicByGenre(String genre, {int limit = 20, int offset = 0});
 
   /// Retrieves a list of music tracks similar to a given track.
-  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20});
+  Future<List<Mp3Music>> getSimilarMusic({required String musicSlug, int limit = 20});
 
   /// Synchronizes local data with the server.
   /// This could be used to update local cache with any changes from the server.
@@ -55,7 +77,4 @@ abstract class Mp3MusicServiceInterface {
   /// Preloads the cache with a fresh batch of data from the server.
   Future<void> preloadCache();
 
-  /// Retrieves detailed information about a specific music track.
-  /// This might include additional data not stored in the basic Mp3Music object.
-  Future<Map<String, dynamic>> getMusicDetails(String slug);
 }

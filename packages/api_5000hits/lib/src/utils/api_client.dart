@@ -38,7 +38,7 @@ class ApiClient {
   }
 
   void setApiKey(String key) {
-    print('seting api key');
+    print('setting api key');
     if (_apiKey == null) {
       _apiKey = key;
       _dio.options.headers['X-Api-Key'] = key;

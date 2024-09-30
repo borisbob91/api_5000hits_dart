@@ -9,6 +9,7 @@ import 'src/core/databases/isar_manager.dart';
 class AuthContrat extends AuthServiceImpl {
   static AuthContrat? _instance;
 
+
   factory AuthContrat() {
     if (_instance == null) {
       print('V contrat init');

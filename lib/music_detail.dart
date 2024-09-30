@@ -34,7 +34,7 @@ class _MusicDetailsPageState extends State<MusicDetailsPage> {
             Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMK-hAeGiFboZm2QLNB3aXGUQT8knA5J6c9_66qjS0eg&s"),
             // Affiche le titre de la chanson
              Text(
-              '${widget.mp3music.title}',
+              widget.mp3music.title,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
 
@@ -88,6 +88,7 @@ class _MusicDetailsPageState extends State<MusicDetailsPage> {
                // _audioPlayer.seek(Duration(seconds: value.toInt()));
               },
             ),
+
           ],
         ),
       ),

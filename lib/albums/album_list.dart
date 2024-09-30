@@ -1,4 +1,4 @@
-import 'package:api_5000hits_dart/album_detail.dart';
+import 'package:api_5000hits_dart/albums/album_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:api_5000hits/api_5000hits.dart';
 

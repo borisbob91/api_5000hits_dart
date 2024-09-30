@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:api_5000hits/src/utils/api_client.dart';
+import 'package:dio/dio.dart';
 
 import 'mp3_music.dart';
 import 'mp3_music_remote_interface.dart';
@@ -6,7 +9,7 @@ import 'mp3_music_remote_interface.dart';
 
 class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepositoryInterface {
   late final ApiClient _apiClient;
-  final  String _route = '/musics';
+  final  String _route = '/api/v1/musics';
   String? _nextPageUrl;
 
   Mp3MusicRemoteRepositoryImplement(this._apiClient);
@@ -89,11 +92,6 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepositoryInter
   }
 
   @override
-  Future<List<Mp3Music>> getPopularMusic({int limit = 20, int offset = 0}) async {
-    return fetchMusic(sortBy: 'hits', sortDesc: true, limit: limit, offset: offset);
-  }
-
-  @override
   Future<List<Mp3Music>> getRecentMusic({int limit = 20, int offset = 0}) async {
     return fetchMusic(sortBy: 'uploaded', sortDesc: true, limit: limit, offset: offset);
   }
@@ -114,9 +112,9 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepositoryInter
   }
 
   @override
-  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20}) async {
+  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20, page=1}) async {
     try {
-      final response = await _apiClient.get('$_route/$musicSlug/similar', queryParameters: {'limit': limit});
+      final response = await _apiClient.get('$_route/$musicSlug/simulars', queryParameters: {'limit': limit, 'page':page});
       final List<dynamic> data = response.data['results'];
       return data.map((json) => Mp3Music.fromJson(json)).toList();
     } catch (e) {
@@ -124,9 +122,39 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepositoryInter
     }
   }
 
+  @override
+  Future<List<Mp3Music>> getPopularMusic({ int limit = 20, int page = 0}) async {
+    try {
+      final response = await _apiClient.get('$_route/populars/', queryParameters: {'limit': limit, 'page':page});
+      final List<dynamic> data = response.data['results'];
+      return data.map((json) => Mp3Music.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to get similar music: $e');
+    }
+  }
+  @override
+  Future<List<Mp3Music>> getMusicForArtistBySlug({required String musicSlug, int limit = 20, int page = 0}) async{
+    try {
+      final response = await _apiClient.get('$_route/$musicSlug/artist', queryParameters: {'limit': limit, 'page':page});
+      final List<dynamic> data = response.data['results'];
+      return data.map((json) => Mp3Music.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to get similar music: $e');
+    }
+  }
 
   @override
   bool canFetchNext() {
     return _nextPageUrl != null;
   }
+
+  Future<List<Mp3Music>> _decodeResponse(Response<dynamic> response) async {
+    final respnseData = jsonDecode(response.toString());
+    final List<dynamic> data = respnseData['results'];
+    print('results: $data');
+    var nextPage = respnseData['next'];
+    var count = respnseData['count'];
+    return  data.map((json) => Mp3Music.fromJson(json)).toList();
+  }
+
 }
