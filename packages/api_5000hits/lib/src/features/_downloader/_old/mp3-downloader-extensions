@@ -4,8 +4,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import '_download_interface.dart';
-import 'mp3-downloader-with-interfaces.dart';
+import '_download_interface';
+import '../download_info.dart';
+import '../mp3-downloader-with-interfaces.dart';
 
 // Interfaces existantes (pour référence)
 // abstract class DownloaderInterface { /* ... */ }
@@ -68,8 +69,7 @@ class ConcurrentDownloadManager implements ConcurrentDownloadManagerInterface {
   @override
   int get currentConcurrentDownloads => _currentDownloads;
 
-  @override
-  Future<void> downloadMusic(String slug, String savePath, Function(DownloadInfo) onProgressUpdate) async {
+  Future<void> concurrentDownloadMusic(String slug, String savePath, Function(DownloadInfo) onProgressUpdate) async {
     if (_currentDownloads < _maxConcurrentDownloads) {
       _currentDownloads++;
       try {
@@ -90,32 +90,14 @@ class ConcurrentDownloadManager implements ConcurrentDownloadManagerInterface {
   void _processQueue() {
     while (_currentDownloads < _maxConcurrentDownloads && _downloadQueue.isNotEmpty) {
       final download = _downloadQueue.removeFirst();
-      downloadMusic(download.slug, download.savePath, download.onProgressUpdate);
+      concurrentDownloadMusic(download.slug, download.savePath, download.onProgressUpdate);
     }
   }
   
-  @override
-  Future<void> cancelDownload(String slug) {
-    // TODO: implement cancelDownload
-    throw UnimplementedError();
-  }
-  
-  @override
-  List<DownloadInfo> getAllDownloads() {
-    // TODO: implement getAllDownloads
-    throw UnimplementedError();
-  }
-  
-  @override
-  DownloadInfo? getDownloadInfo(String slug) {
-    // TODO: implement getDownloadInfo
-    throw UnimplementedError();
-  }
 
-  // Implémentez les autres méthodes de DownloadManagerInterface...
 }
 
-class PausableDownloadManager implements DownloadManagerInterface, PausableDownloadInterface {
+class PausableDownloadManager implements PauseResumeDownloaderInterface {
   final DownloadManagerInterface _baseManager;
   final Map<String, Completer<void>> _pauseCompleters = {};
 

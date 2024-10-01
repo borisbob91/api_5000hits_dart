@@ -1,7 +1,12 @@
+import 'package:api_5000hits/api_5000hits.dart';
+import 'package:api_5000hits/src/features/_downloader/download_info.dart';
 import 'package:api_5000hits/src/features/album/mp3_album.dart';
 import 'package:api_5000hits/src/features/album/mp3_cover.dart';
 import 'package:api_5000hits/src/features/auth/auth_model.dart';
 import 'package:api_5000hits/src/features/auth/mp3_user.dart';
+import 'package:api_5000hits/src/features/lyric/mp3_lyric.dart';
+import 'package:api_5000hits/src/features/music/mp3_music.dart';
+import 'package:api_5000hits/src/features/video/mp3_video.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,7 +29,7 @@ class IsarManager {
   }
 
 
-  final List<CollectionSchema<dynamic>> _schemas = [Mp3AlbumSchema, Mp3CoverSchema, Mp3UserSchema, TokenSchema];
+  final List<CollectionSchema<dynamic>> _schemas = [Mp3AlbumSchema,Mp3MusicSchema,Mp3LyricSchema, Mp3VideoSchema, Mp3CoverSchema, Mp3UserSchema, TokenSchema, DownloadInfoIsarSchema];
 
   void addSchema<T>(CollectionSchema<T> schema) {
     if (!_schemas.contains(schema)) {

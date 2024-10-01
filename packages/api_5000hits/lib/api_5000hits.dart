@@ -10,6 +10,7 @@ import 'package:api_5000hits/src/mixins/mixins.dart';
 
 import 'lyric.dart';
 import 'src/utils/api_client.dart';
+import 'video.dart';
 
 export 'package:api_5000hits/src/features/album/mp3_album.dart' show Mp3Album;
 export 'package:api_5000hits/src/features/music/mp3_music.dart' show Mp3Music;

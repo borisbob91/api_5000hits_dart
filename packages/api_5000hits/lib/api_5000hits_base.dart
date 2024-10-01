@@ -6,6 +6,7 @@ class MusicSdk  with InitializationMixin{
   late final AuthContrat _authContrat;
   late final ArtistContrat _artistContrat;
   late final LyricContrat _lyricContrat;
+  late final VideoContrat _videoContrat;
 
   static String _apiKey = "";
   bool _appInit = false;
@@ -22,6 +23,7 @@ class MusicSdk  with InitializationMixin{
       _musicContrat = MusicContrat();
       _authContrat =AuthContrat();
       _artistContrat = ArtistContrat();
+      _videoContrat = VideoContrat();
       return;
   }
 
@@ -66,6 +68,13 @@ class MusicSdk  with InitializationMixin{
   LyricContrat? get lyricContrat {
     if (checkInitialization()) {
       return _lyricContrat;
+    }
+    return null;
+  }
+
+  VideoContrat? get videoContrat {
+    if (checkInitialization()) {
+      return _videoContrat;
     }
     return null;
   }

@@ -4,8 +4,7 @@ import 'package:path/path.dart' as path;
 import 'package:crypto/crypto.dart' as crypto;
 import 'dart:convert';
 
-import '_download_interface.dart';
-
+import '_download_interface';
 
 
 // Implémentations
@@ -25,7 +24,7 @@ class _Mp3Downloader implements ResumableDownloaderInterface {
 
   _Mp3Downloader(this._signatureGenerator) : 
     _dio = Dio(),
-    _baseUrl = 'https://api.example.com/download',
+    _baseUrl = 'https://api2.5000hits.com/download',
     _apiKey = 'votre_clé_api_secrète' {
     _dio.options.headers['Authorization'] = 'Bearer $_apiKey';
     _dio.options.connectTimeout = Duration(seconds: 30);
@@ -94,18 +93,7 @@ class DefaultSignatureGenerator implements SignatureGeneratorInterface {
   }
 }
 
-enum DownloadStatus { notStarted, downloading, completed, failed }
 
-class DownloadInfo {
-  final String slug;
-  final String filePath;
-  DownloadStatus status;
-  double progress;
-
-  DownloadInfo(this.slug, this.filePath)
-      : status = DownloadStatus.notStarted,
-        progress = 0.0;
-}
 
 class Mp3DownloadManager implements DownloadManagerInterface {
   final DownloaderInterface _downloader;
