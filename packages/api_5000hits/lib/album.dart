@@ -1,9 +1,9 @@
-import 'package:api_5000hits/src/features/album/mp3_album_service_implemente.dart';
+import 'package:api_5000hits/src/features/album/impl/mp3_album_service_implemente.dart';
 import 'package:api_5000hits/src/utils/api_client.dart';
 import 'src/core/databases/isar_manager.dart';
-import 'src/features/album/mp3_album_local_repository_implemente.dart';
+import 'src/features/album/impl/mp3_album_local_repository_implemente.dart';
 import 'src/features/album/mp3_album_local_repository_interface.dart';
-import 'src/features/album/mp3_album_remote_repository_implemente.dart';
+import 'src/features/album/impl/mp3_album_remote_repository_implemente.dart';
 import 'src/features/album/mp3_album_remote_repository_interface.dart';
 
 

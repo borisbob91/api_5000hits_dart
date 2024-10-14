@@ -71,7 +71,7 @@ class AuthServiceImpl implements AuthService {
     final userProfile = await _remoteRepository.getUserProfile(token.access!);
     await _localRepository.saveUserProfile(userProfile);
   }
-  
+
   @override
  Future<bool> isAuthenticated() async {
     final token = await _getLocalToken();
@@ -95,4 +95,4 @@ class AuthServiceImpl implements AuthService {
       return await _localRepository.getToken();
   }
 
-  }
+}

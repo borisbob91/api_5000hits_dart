@@ -5,11 +5,17 @@ import 'package:api_5000hits_dart/albums/album_list.dart';
 import 'package:api_5000hits_dart/music_detail.dart';
 import 'package:api_5000hits_dart/albums/populare_albums.dart';
 import 'package:api_5000hits_dart/albums/top_download_album.dart';
+import 'package:api_5000hits_dart/musics/music_list_with_gender.dart';
+import 'package:api_5000hits_dart/videos/video_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'albums/album_search.dart';
+import 'auth_page.dart';
 import 'download_page.dart';
+import 'lyric_page.dart';
+import 'musics/music_populars.dart';
+import 'musics/music_search_page.dart';
 
 
 void main() {
@@ -70,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       isLoading = true;
     });
-    musicSdk.music?.fetchMusic().then((value)  {
+    musicSdk.musicContrat?.getMusics().then((value)  {
       musics = value;
       setState(() {
         isLoading = false;
@@ -141,6 +147,43 @@ class _MyHomePageState extends State<MyHomePage> {
               }));
 
             }, child: Text('Album search')),
+            SizedBox(height: 10,),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return MusicListByGenrePage();
+              }));
+
+            }, child: Text('Music list with genre')),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return PopularMusic();
+              }));
+
+            }, child: Text('Popular Music')),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return MusicSearchPage();
+              }));
+
+            }, child: Text('Search Music')),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return LyricsListPage();
+              }));
+
+            }, child: Text('Lyrics Music')),
+
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return VideoListScreen();
+              }));
+
+            }, child: Text('videos Music')), ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (builder){
+                return AuthTestPage();
+              }));
+
+            }, child: Text('auth Music')),
           ],
       ),),)
     );

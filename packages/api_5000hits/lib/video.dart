@@ -12,7 +12,7 @@ import 'src/utils/api_client.dart';
 
 class VideoContrat implements Mp3VideoService {
   static VideoContrat? _instance;
-  late final Mp3VideoService _service;
+   static Mp3VideoService? _service;
 
   factory VideoContrat() {
     if (_instance == null) {
@@ -36,47 +36,47 @@ class VideoContrat implements Mp3VideoService {
 
   @override
   Future<void> clearCache() {
-   return _service.clearCache();
+   return _service!.clearCache();
   }
 
   @override
   Future<List<Mp3Video>> fetchVideos({String? searchQuery, String? title, String? artist, String? genre, int? country, int limit = 20, int page = 1}) async {
-    return await _service.fetchVideos(searchQuery: searchQuery, artist: artist, genre: genre, title: title, limit: limit, page: page);
+    return await _service!.fetchVideos(searchQuery: searchQuery, artist: artist, genre: genre, title: title, limit: limit, page: page);
   }
 
   @override
   Future<Mp3Video?> getVideoBySlug({required String slug})async {
-   return await _service.getVideoBySlug(slug: slug);
+   return await _service!.getVideoBySlug(slug: slug);
   }
 
   @override
   Future<List<Mp3Video>> getVideosByArtist(String artist, {int limit = 20, int page = 1}) {
-   return _service.getVideosByArtist(artist, limit: limit, page: page);
+   return _service!.getVideosByArtist(artist, limit: limit, page: page);
   }
 
   @override
   Future<void> preloadCache() async{
-    return await _service.preloadCache();
+    return await _service!.preloadCache();
   }
 
   @override
   void resetPagination() {
-   return _service.resetPagination();
+   return _service!.resetPagination();
   }
 
   @override
   Future<void> saveVideo({required Mp3Video video}) async {
-   return await _service.saveVideo(video: video);
+   return await _service!.saveVideo(video: video);
   }
 
   @override
   Future<List<Mp3Video>> searchVideos(String query, {int limit = 20, int page = 1}) async{
-    return await _service.searchVideos(query, limit: limit, page: page);
+    return await _service!.searchVideos(query, limit: limit, page: page);
   }
 
   @override
   Future<void> syncData() async{
-   return await _service.syncData();
+   return await _service!.syncData();
   }
 
 }

@@ -9,7 +9,7 @@ import 'src/features/lyric/mp3_lyric.dart';
 
 class LyricContrat implements Mp3LyricService {
   static LyricContrat? _instance;
-  late final Mp3LyricService _lyricService;
+  static Mp3LyricService? _lyricService;
 
   factory LyricContrat() {
     if (_instance == null) {
@@ -23,7 +23,7 @@ class LyricContrat implements Mp3LyricService {
   }
 
   LyricContrat._internal({required Mp3LyricRemoteRepositoryImpl remoteRepository, required Mp3LyricLocalRepositoryImpl localRepository}) {
-    _lyricService = Mp3LyricServiceImpl(remoteRepository, localRepository);
+     _lyricService = Mp3LyricServiceImpl(remoteRepository, localRepository);
   }
 
   @override
@@ -36,7 +36,7 @@ class LyricContrat implements Mp3LyricService {
     int limit = 20,
     int page = 0
   }) async {
-    return await _lyricService.getLyrics(
+    return await _lyricService!.getLyrics(
       search: search,
       country: country,
       title: title,
@@ -49,22 +49,22 @@ class LyricContrat implements Mp3LyricService {
 
   @override
   Future<void> clearCache() {
-    return _lyricService.clearCache();
+    return _lyricService!.clearCache();
   }
 
   @override
   Future<void> deleteLyric({required String slug}) async{
-   return await _lyricService.deleteLyric(slug: slug);
+   return await _lyricService?.deleteLyric(slug: slug);
   }
 
   @override
   Future<Mp3Lyric> getLyricBySlug(String slug) async{
-   return await _lyricService.getLyricBySlug(slug);
+   return await _lyricService!.getLyricBySlug(slug);
   }
 
   @override
   Future<void> saveOrUpdateLyric(Mp3Lyric lyric) async{
-   _lyricService.saveOrUpdateLyric(lyric);
+   _lyricService?.saveOrUpdateLyric(lyric);
   }
 
 }

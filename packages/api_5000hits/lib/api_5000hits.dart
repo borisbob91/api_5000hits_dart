@@ -14,7 +14,11 @@ import 'video.dart';
 
 export 'package:api_5000hits/src/features/album/mp3_album.dart' show Mp3Album;
 export 'package:api_5000hits/src/features/music/mp3_music.dart' show Mp3Music;
-export 'package:api_5000hits/src/features/album/pagiination_results.dart';
+export 'package:api_5000hits/src/features/lyric/mp3_lyric.dart' show Mp3Lyric;
+export 'package:api_5000hits/src/features/video/mp3_video.dart' show Mp3Video;
+export 'package:api_5000hits/src/exceptions/error_types.dart' show ApiErrorTypes;
+export 'package:api_5000hits/src/exceptions/auth_error.dart' show AuthError;
+
 part 'api_5000hits_base.dart';
 
 

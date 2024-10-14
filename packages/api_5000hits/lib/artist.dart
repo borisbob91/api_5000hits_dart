@@ -1,7 +1,7 @@
 import 'package:api_5000hits/src/features/album/mp3_album.dart';
 import 'package:api_5000hits/src/features/artist/mp3_artist.dart';
-import 'package:api_5000hits/src/features/artist/mp3_artist_remote_repository_impl.dart';
-import 'package:api_5000hits/src/features/artist/mp3_artist_service_impl.dart';
+import 'package:api_5000hits/src/features/artist/impl/mp3_artist_remote_repository_impl.dart';
+import 'package:api_5000hits/src/features/artist/impl/mp3_artist_service_impl.dart';
 import 'package:api_5000hits/src/features/music/mp3_music.dart';
 import 'package:api_5000hits/src/utils/api_client.dart';
 

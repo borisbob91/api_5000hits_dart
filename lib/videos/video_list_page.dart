@@ -1,6 +1,8 @@
-
+import 'package:api_5000hits/api_5000hits.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'vidoe_detail.dart';
 
 class VideoListScreen extends ConsumerStatefulWidget {
   @override
@@ -17,7 +19,7 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
     _scrollController.addListener(_onScroll);
     // Charger les premières vidéos
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(videosProvider.notifier).loadMoreVideos();
+      ref.read(videosProvider.notifier).loadVideos();
     });
   }
 
@@ -62,60 +64,67 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
     );
   }
 
-  Widget _buildVideoItem(Video video) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              Image.network(
-                video.thumbnailUrl,
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                margin: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  video.duration,
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildVideoItem(Mp3Video video) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return VideoDetailPage(video: video);
+        }));
+      },
+      child: Card(
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: Alignment.bottomRight,
               children: [
-                Text(
-                  video.title,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                Image.network(
+                  video.cover ?? '',
+                  width: double.infinity,
+                  height: 180,
+                  fit: BoxFit.cover,
                 ),
-                SizedBox(height: 4),
-                Text(
-                  video.artist,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  video.views,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  margin: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                     '4555',
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    video.title ?? 'No Title',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    video.artist ?? 'Unknown Artist',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '${video.views ?? 0} views',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -138,44 +147,34 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
   }
 }
 
+final videosProvider = StateNotifierProvider<VideosNotifier, List<Mp3Video>>((ref) => VideosNotifier());
 
-class Video {
-  final String title;
-  final String artist;
-  final String thumbnailUrl;
-  final String duration;
-  final String views;
-
-  Video({
-    required this.title,
-    required this.artist,
-    required this.thumbnailUrl,
-    required this.duration,
-    required this.views,
-  });
-}
-
-final videosProvider = StateNotifierProvider<VideosNotifier, List<Video>>((ref) => VideosNotifier());
-
-class VideosNotifier extends StateNotifier<List<Video>> {
+class VideosNotifier extends StateNotifier<List<Mp3Video>> {
   VideosNotifier() : super([]);
+  final MusicSdk _musicSdk = MusicSdk.instance;
+  int _currentPage = 0;
+  bool _hasMore = true;
+
+  Future<void> loadVideos() async {
+    if (state.isEmpty) {
+      await loadMoreVideos();
+    }
+  }
 
   Future<void> loadMoreVideos() async {
-    // Simuler un délai de chargement
-    await Future.delayed(Duration(seconds: 1));
+    if (!_hasMore) return;
 
-    // Simuler le chargement de nouvelles vidéos
-    final newVideos = List.generate(
-      10,
-          (index) => Video(
-        title: 'Video ${state.length + index + 1}',
-        artist: 'Artist ${state.length + index + 1}',
-        thumbnailUrl: 'https://picsum.photos/320/180?random=${state.length + index}',
-        duration: '${3 + (index % 3)}:${30 + (index * 7) % 30}',
-        views: '${(state.length + index) * 1000 + 500} views',
-      ),
-    );
-
-    state = [...state, ...newVideos];
+    try {
+      final newVideos = await _musicSdk.videoContrat?.fetchVideos(page: _currentPage) ?? [];
+      if (newVideos.isEmpty) {
+        _hasMore = false;
+      } else {
+        state = [...state, ...newVideos];
+        _currentPage++;
+      }
+    } catch (e) {
+      print('Error loading videos: $e');
+      // Vous pouvez gérer l'erreur ici, par exemple en affichant un message à l'utilisateur
+    }
   }
 }

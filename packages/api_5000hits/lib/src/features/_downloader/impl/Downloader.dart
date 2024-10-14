@@ -12,6 +12,7 @@ class Downloader implements DownloaderInterface {
   Downloader(this._signatureGenerator, this._baseUrl) : _dio = Dio() {
     _dio.options.connectTimeout = Duration(seconds: 30);
     _dio.options.receiveTimeout = Duration(seconds: 60);
+    _dio.options.baseUrl = _baseUrl;
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'package:api_5000hits/api_5000hits.dart';
 import 'package:api_5000hits/src/features/_downloader/download_info.dart';
 import 'package:api_5000hits/src/features/album/mp3_album.dart';
 import 'package:api_5000hits/src/features/album/mp3_cover.dart';
@@ -21,7 +20,7 @@ class IsarManager {
     if (_instance == null){
       IsarManager._internal();
     }
-    return _instance!;
+    return _instance??=IsarManager._internal();
   }
 
   IsarManager._internal(){
@@ -38,7 +37,7 @@ class IsarManager {
   }
 
   Future<Isar> initialize() async {
-    if (_isar !=null || _isar!.isOpen){
+    if (_isar !=null){
       print("Isar is open! ^${_isar!.isOpen}");
       print("IsarManager is already initialized!");
       return _isar!;

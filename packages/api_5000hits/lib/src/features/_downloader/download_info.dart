@@ -29,6 +29,7 @@ class DownloadInfoIsar  {
   late String slug;
 
   late String filePath;
+
   @enumerated
   late DownloadStatus status;
   late double progress;
