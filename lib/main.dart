@@ -53,7 +53,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool isLoading= false;
-  MusicSdk musicSdk = MusicSdk().init(key: "xDD849t9.1liZ1a9I7Oud4kxQEAanh5cQAQe9kLEB");
+  MusicSdk musicSdk = MusicSdk().init(key: "HbsLnz0a.2Gcl5tpx691BfDTDIqB6Ts5KAKBvmEvI");
   List<Mp3Album> albums = [];
   List<Mp3Music> musics = [];
   // var albums = [];
