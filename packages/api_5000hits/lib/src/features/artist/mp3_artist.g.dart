@@ -37,18 +37,13 @@ const Mp3ArtistSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'photo': PropertySchema(
-      id: 4,
-      name: r'photo',
-      type: IsarType.string,
-    ),
     r'slug': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'slug',
       type: IsarType.string,
     ),
     r'songs': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'songs',
       type: IsarType.long,
     )
@@ -58,8 +53,29 @@ const Mp3ArtistSchema = CollectionSchema(
   deserialize: _mp3ArtistDeserialize,
   deserializeProp: _mp3ArtistDeserializeProp,
   idName: r'id',
-  indexes: {},
-  links: {},
+  indexes: {
+    r'slug': IndexSchema(
+      id: 6169444064746062836,
+      name: r'slug',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'slug',
+          type: IndexType.value,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
+  links: {
+    r'photo': LinkSchema(
+      id: -4197389630408266335,
+      name: r'photo',
+      target: r'Mp3Cover',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _mp3ArtistGetId,
   getLinks: _mp3ArtistGetLinks,
@@ -73,30 +89,9 @@ int _mp3ArtistEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.biography;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.name;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.photo;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.slug;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.biography.length * 3;
+  bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.slug.length * 3;
   return bytesCount;
 }
 
@@ -110,9 +105,8 @@ void _mp3ArtistSerialize(
   writer.writeString(offsets[1], object.biography);
   writer.writeLong(offsets[2], object.country);
   writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.photo);
-  writer.writeString(offsets[5], object.slug);
-  writer.writeLong(offsets[6], object.songs);
+  writer.writeString(offsets[4], object.slug);
+  writer.writeLong(offsets[5], object.songs);
 }
 
 Mp3Artist _mp3ArtistDeserialize(
@@ -122,14 +116,13 @@ Mp3Artist _mp3ArtistDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Mp3Artist(
-    albums: reader.readLongOrNull(offsets[0]),
-    biography: reader.readStringOrNull(offsets[1]),
-    country: reader.readLongOrNull(offsets[2]),
+    albums: reader.readLongOrNull(offsets[0]) ?? 0,
+    biography: reader.readStringOrNull(offsets[1]) ?? '',
+    country: reader.readLongOrNull(offsets[2]) ?? 0,
     id: id,
-    name: reader.readStringOrNull(offsets[3]),
-    photo: reader.readStringOrNull(offsets[4]),
-    slug: reader.readStringOrNull(offsets[5]),
-    songs: reader.readLongOrNull(offsets[6]),
+    name: reader.readStringOrNull(offsets[3]) ?? '',
+    slug: reader.readStringOrNull(offsets[4]) ?? '',
+    songs: reader.readLongOrNull(offsets[5]) ?? 0,
   );
   return object;
 }
@@ -142,19 +135,17 @@ P _mp3ArtistDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 2:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
-    case 6:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -165,11 +156,66 @@ Id _mp3ArtistGetId(Mp3Artist object) {
 }
 
 List<IsarLinkBase<dynamic>> _mp3ArtistGetLinks(Mp3Artist object) {
-  return [];
+  return [object.photo];
 }
 
 void _mp3ArtistAttach(IsarCollection<dynamic> col, Id id, Mp3Artist object) {
   object.id = id;
+  object.photo.attach(col, col.isar.collection<Mp3Cover>(), r'photo', id);
+}
+
+extension Mp3ArtistByIndex on IsarCollection<Mp3Artist> {
+  Future<Mp3Artist?> getBySlug(String slug) {
+    return getByIndex(r'slug', [slug]);
+  }
+
+  Mp3Artist? getBySlugSync(String slug) {
+    return getByIndexSync(r'slug', [slug]);
+  }
+
+  Future<bool> deleteBySlug(String slug) {
+    return deleteByIndex(r'slug', [slug]);
+  }
+
+  bool deleteBySlugSync(String slug) {
+    return deleteByIndexSync(r'slug', [slug]);
+  }
+
+  Future<List<Mp3Artist?>> getAllBySlug(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return getAllByIndex(r'slug', values);
+  }
+
+  List<Mp3Artist?> getAllBySlugSync(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'slug', values);
+  }
+
+  Future<int> deleteAllBySlug(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'slug', values);
+  }
+
+  int deleteAllBySlugSync(List<String> slugValues) {
+    final values = slugValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'slug', values);
+  }
+
+  Future<Id> putBySlug(Mp3Artist object) {
+    return putByIndex(r'slug', object);
+  }
+
+  Id putBySlugSync(Mp3Artist object, {bool saveLinks = true}) {
+    return putByIndexSync(r'slug', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllBySlug(List<Mp3Artist> objects) {
+    return putAllByIndex(r'slug', objects);
+  }
+
+  List<Id> putAllBySlugSync(List<Mp3Artist> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'slug', objects, saveLinks: saveLinks);
+  }
 }
 
 extension Mp3ArtistQueryWhereSort
@@ -177,6 +223,14 @@ extension Mp3ArtistQueryWhereSort
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhere> anySlug() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'slug'),
+      );
     });
   }
 }
@@ -247,28 +301,148 @@ extension Mp3ArtistQueryWhere
       ));
     });
   }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugEqualTo(
+      String slug) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'slug',
+        value: [slug],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugNotEqualTo(
+      String slug) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'slug',
+              lower: [],
+              upper: [slug],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'slug',
+              lower: [slug],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'slug',
+              lower: [slug],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'slug',
+              lower: [],
+              upper: [slug],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugGreaterThan(
+    String slug, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'slug',
+        lower: [slug],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugLessThan(
+    String slug, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'slug',
+        lower: [],
+        upper: [slug],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugBetween(
+    String lowerSlug,
+    String upperSlug, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'slug',
+        lower: [lowerSlug],
+        includeLower: includeLower,
+        upper: [upperSlug],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugStartsWith(
+      String SlugPrefix) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'slug',
+        lower: [SlugPrefix],
+        upper: ['$SlugPrefix\u{FFFFF}'],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'slug',
+        value: [''],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterWhereClause> slugIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'slug',
+              upper: [''],
+            ))
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'slug',
+              lower: [''],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'slug',
+              lower: [''],
+            ))
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'slug',
+              upper: [''],
+            ));
+      }
+    });
+  }
 }
 
 extension Mp3ArtistQueryFilter
     on QueryBuilder<Mp3Artist, Mp3Artist, QFilterCondition> {
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> albumsIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'albums',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> albumsIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'albums',
-      ));
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> albumsEqualTo(
-      int? value) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'albums',
@@ -278,7 +452,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> albumsGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -291,7 +465,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> albumsLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -304,8 +478,8 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> albumsBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -320,25 +494,8 @@ extension Mp3ArtistQueryFilter
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> biographyIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'biography',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition>
-      biographyIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'biography',
-      ));
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> biographyEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -352,7 +509,7 @@ extension Mp3ArtistQueryFilter
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition>
       biographyGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -367,7 +524,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> biographyLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -382,8 +539,8 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> biographyBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -469,24 +626,8 @@ extension Mp3ArtistQueryFilter
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> countryIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'country',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> countryIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'country',
-      ));
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> countryEqualTo(
-      int? value) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'country',
@@ -496,7 +637,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> countryGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -509,7 +650,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> countryLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -522,8 +663,8 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> countryBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -607,24 +748,8 @@ extension Mp3ArtistQueryFilter
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> nameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'name',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> nameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'name',
-      ));
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> nameEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -637,7 +762,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> nameGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -652,7 +777,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> nameLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -667,8 +792,8 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> nameBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -753,170 +878,8 @@ extension Mp3ArtistQueryFilter
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'photo',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'photo',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'photo',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'photo',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'photo',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'photo',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'photo',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'photo',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'photo',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'photo',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'photo',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'photo',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> slugIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'slug',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> slugIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'slug',
-      ));
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> slugEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -929,7 +892,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> slugGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -944,7 +907,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> slugLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -959,8 +922,8 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> slugBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1045,24 +1008,8 @@ extension Mp3ArtistQueryFilter
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> songsIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'songs',
-      ));
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> songsIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'songs',
-      ));
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> songsEqualTo(
-      int? value) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'songs',
@@ -1072,7 +1019,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> songsGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1085,7 +1032,7 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> songsLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1098,8 +1045,8 @@ extension Mp3ArtistQueryFilter
   }
 
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> songsBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1119,7 +1066,20 @@ extension Mp3ArtistQueryObject
     on QueryBuilder<Mp3Artist, Mp3Artist, QFilterCondition> {}
 
 extension Mp3ArtistQueryLinks
-    on QueryBuilder<Mp3Artist, Mp3Artist, QFilterCondition> {}
+    on QueryBuilder<Mp3Artist, Mp3Artist, QFilterCondition> {
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photo(
+      FilterQuery<Mp3Cover> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'photo');
+    });
+  }
+
+  QueryBuilder<Mp3Artist, Mp3Artist, QAfterFilterCondition> photoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'photo', 0, true, 0, true);
+    });
+  }
+}
 
 extension Mp3ArtistQuerySortBy on QueryBuilder<Mp3Artist, Mp3Artist, QSortBy> {
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> sortByAlbums() {
@@ -1167,18 +1127,6 @@ extension Mp3ArtistQuerySortBy on QueryBuilder<Mp3Artist, Mp3Artist, QSortBy> {
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> sortByPhoto() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'photo', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> sortByPhotoDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'photo', Sort.desc);
     });
   }
 
@@ -1269,18 +1217,6 @@ extension Mp3ArtistQuerySortThenBy
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> thenByPhoto() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'photo', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> thenByPhotoDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'photo', Sort.desc);
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QAfterSortBy> thenBySlug() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'slug', Sort.asc);
@@ -1334,13 +1270,6 @@ extension Mp3ArtistQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Mp3Artist, Mp3Artist, QDistinct> distinctByPhoto(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'photo', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<Mp3Artist, Mp3Artist, QDistinct> distinctBySlug(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1363,43 +1292,37 @@ extension Mp3ArtistQueryProperty
     });
   }
 
-  QueryBuilder<Mp3Artist, int?, QQueryOperations> albumsProperty() {
+  QueryBuilder<Mp3Artist, int, QQueryOperations> albumsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'albums');
     });
   }
 
-  QueryBuilder<Mp3Artist, String?, QQueryOperations> biographyProperty() {
+  QueryBuilder<Mp3Artist, String, QQueryOperations> biographyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'biography');
     });
   }
 
-  QueryBuilder<Mp3Artist, int?, QQueryOperations> countryProperty() {
+  QueryBuilder<Mp3Artist, int, QQueryOperations> countryProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'country');
     });
   }
 
-  QueryBuilder<Mp3Artist, String?, QQueryOperations> nameProperty() {
+  QueryBuilder<Mp3Artist, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });
   }
 
-  QueryBuilder<Mp3Artist, String?, QQueryOperations> photoProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'photo');
-    });
-  }
-
-  QueryBuilder<Mp3Artist, String?, QQueryOperations> slugProperty() {
+  QueryBuilder<Mp3Artist, String, QQueryOperations> slugProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'slug');
     });
   }
 
-  QueryBuilder<Mp3Artist, int?, QQueryOperations> songsProperty() {
+  QueryBuilder<Mp3Artist, int, QQueryOperations> songsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'songs');
     });

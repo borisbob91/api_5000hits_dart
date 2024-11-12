@@ -44,6 +44,7 @@ class Mp3ArtistRemoteRepositoryImplement implements Mp3ArtistRemoteRepositoryInt
       });
       return await _decodeArtistResponse(response);
     } catch (error) {
+      print("****new artist fetch error: $error");
       throw ArtistFetchException('Failed to fetch artists: $error');
     }
   }
@@ -98,6 +99,7 @@ class Mp3ArtistRemoteRepositoryImplement implements Mp3ArtistRemoteRepositoryInt
       final response = await apiClient.get(nextPage!);
       return await _decodeArtistResponse(response);
     } catch (error) {
+      print("****new artist fetch next error: $error");
       throw ArtistFetchException('Failed to fetch next artists: $error');
     }
   }
