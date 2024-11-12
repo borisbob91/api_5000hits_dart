@@ -24,6 +24,7 @@ class MusicSdk  with InitializationMixin{
       _authContrat =AuthContrat();
       _artistContrat = ArtistContrat();
       _videoContrat = VideoContrat();
+      _lyricContrat = LyricContrat();
       return;
   }
 

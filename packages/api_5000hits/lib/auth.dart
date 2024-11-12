@@ -47,7 +47,7 @@ class AuthContrat implements AuthService {
 
   @override
   Future<AuthState> signIn({required String email, required String password, bool catchToken = true}) async {
-   return await signIn(email: email, password: password);
+    return await _service.signIn(email: email, password: password);
   }
 
   @override

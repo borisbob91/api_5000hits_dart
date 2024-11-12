@@ -8,7 +8,7 @@ import '../exceptions.dart';
 class AuthServiceImpl implements AuthService {
   final AuthRemoteRepository _remoteRepository;
   final AuthLocalRepository _localRepository;
-  late String? userToken;
+  String? userToken = null;
   AuthServiceImpl(this._remoteRepository, this._localRepository);
 
   @override
@@ -23,10 +23,11 @@ class AuthServiceImpl implements AuthService {
         password: password,
       );
       await _handleAuthResponse(token);
+      final profil = await _localRepository.getUserProfile();
       return AuthState(
         isAuthenticated: true,
         token: token.access,
-        userProfile: await _localRepository.getUserProfile(),
+        userProfile: profil,
       );
     } on AuthException catch (e) {
       throw Exception('SignIn failed: ${e.message}');
@@ -61,7 +62,7 @@ class AuthServiceImpl implements AuthService {
     final isAuthenticate = await isAuthenticated();
     return AuthState(
       isAuthenticated: isAuthenticate,
-      token: isAuthenticate ? userToken : null,
+      token: isAuthenticate ? userToken : "",
       userProfile: isAuthenticate ? userProfile : null,
     );
   }
@@ -87,7 +88,7 @@ class AuthServiceImpl implements AuthService {
      }
       return refreshed;
     }
-    userToken = token.access;
+    userToken = token.access ?? "";
     return true;
   }
 

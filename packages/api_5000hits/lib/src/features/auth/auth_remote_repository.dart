@@ -4,7 +4,7 @@ import 'auth_model.dart';
 import 'mp3_user.dart';
 
 abstract class AuthRemoteRepository {
-  final String route= '/token';
+  final String route= '/token/';
   
   Future<Token> obtainToken({
     required String email,

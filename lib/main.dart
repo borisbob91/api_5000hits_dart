@@ -54,6 +54,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool isLoading= false;
   MusicSdk musicSdk = MusicSdk().init(key: "HbsLnz0a.2Gcl5tpx691BfDTDIqB6Ts5KAKBvmEvI");
+
   List<Mp3Album> albums = [];
   List<Mp3Music> musics = [];
   // var albums = [];
@@ -62,9 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       isLoading = true;
     });
+    final re = musicSdk.artist?.getArtists();
+    print('******** artist loaded ${re}');
     musicSdk.albumContrat?.getAlbums().then((onValue) {
       final data = onValue;
-      print('contrat loaded ${data}');
+      print('*********************contrat loaded ${data}');
        setState(() {
         isLoading = false;
         albums = data;
@@ -72,10 +75,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _fetchMusics() {
+  void _fetchMusics() async{
     setState(() {
       isLoading = true;
     });
+    final re = await musicSdk.auth?.signIn(email: "parkerboris@live.fr", password: "0759188395@Hits");
+    print('auth state test: ${re}');
     musicSdk.musicContrat?.getMusics().then((value)  {
       musics = value;
       setState(() {

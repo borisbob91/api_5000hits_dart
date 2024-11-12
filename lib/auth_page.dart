@@ -25,7 +25,9 @@ class _AuthTestPageState extends State<AuthTestPage> {
   }
 
   Future<void> _checkCurrentUser() async {
+    print('starting check user:');
     final user = await _musicSdk.auth?.getCurrentAuthState();
+    print('check user $user');
     setState(() {
       _isLoggedIn = user?.isAuthenticated ?? false;
       _currentUserEmail = user?.userProfile?.email;
@@ -42,13 +44,16 @@ class _AuthTestPageState extends State<AuthTestPage> {
       });
 
       try {
-        await _musicSdk.auth?.signIn(
+      AuthState? state =  await _musicSdk.auth?.signIn(
           email: _emailController.text,
           password: _passwordController.text,
         );
-        await _checkCurrentUser();
         setState(() {
-          _successMessage = 'Sign in successful.';
+          if (state?.isAuthenticated == true){
+            _successMessage = 'Sign in successful.';
+          }else{
+            _errorMessage = 'Sign in failed: credential error!';
+          }
         });
       } catch (e) {
         setState(() {

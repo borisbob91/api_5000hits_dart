@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:api_5000hits/src/utils/api_client.dart';
 import 'package:dio/dio.dart';
 
@@ -17,15 +19,18 @@ class AuthRemoteRepositoryImpl implements AuthRemoteRepository {
     required String password,
   }) async {
     try {
-      final response = await _apiClient.post('$route/',  {
+      final data = {
         'email': email,
         'password': password,
-      });
+      };
+      final response = await _apiClient.post('$route/', data);
       final token = Token.fromJson(response.data);
       _apiClient.setToken(token.access!);
       return token;
     } on DioException catch (e) {
-      throw AuthException(message: e.response?.data['detail'] ?? 'Unknown error when signIn', code: "invalid_login_data");
+      throw AuthException(
+          message: e.response?.data['detail'] ?? 'Unknown error when signIn',
+          code: "invalid_login_data");
     }
   }
 
@@ -35,18 +40,20 @@ class AuthRemoteRepositoryImpl implements AuthRemoteRepository {
       final response = await _apiClient.post('$route/refresh/', {
         'refresh': refreshToken,
       });
-      final token= Token.fromJson(response.data);
+      final token = Token.fromJson(response.data);
       _apiClient.setToken(token.access!);
       return token;
     } on DioException catch (e) {
-      throw AuthException(message: e.response?.data['detail'] ?? 'Unknown error', code: 'invalide_token');
+      throw AuthException(
+          message: e.response?.data['detail'] ?? 'Unknown error',
+          code: 'invalide_token');
     }
   }
 
   @override
   Future<bool> verifyToken(String token) async {
     try {
-     await _apiClient.post('$route/verify/', {
+      await _apiClient.post('$route/verify/', {
         'token': token,
       });
       return true;
@@ -58,22 +65,26 @@ class AuthRemoteRepositoryImpl implements AuthRemoteRepository {
       return false;
     }
   }
-  
+
   @override
   Future<Mp3User> getUserProfile(String token) async {
     try {
-      final response = await _apiClient.get('api/v1/users/profil/', 
+      final response = await _apiClient.get(
+        '/api/v1/users/profil/',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
+      print("reponse auth:$response");
       return Mp3User.fromJson(response.data);
     } on DioException catch (e) {
-      throw AuthException(message: e.response?.data['detail'] ?? 'Failed to fetch user profile');
+      throw AuthException(
+          message:
+              e.response?.data['detail'] ?? 'Failed to fetch user profile');
     }
   }
-  
+
   @override
   String get route => '/token';
-  
+
   @override
   void logOut() async {
     _apiClient.clearToken();
