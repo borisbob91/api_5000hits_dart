@@ -79,8 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       isLoading = true;
     });
-    final re = await musicSdk.auth?.signIn(email: "parkerboris@live.fr", password: "0759188395@Hits");
-    print('auth state test: ${re}');
+    // final auth = await musicSdk.auth?.signIn(email: "parkerboris@live.fr", password: "0759188395@Hits");
+    final re = await musicSdk.auth?.getCurrentAuthState();
+    print('auth state test: ${re!.userProfile}');
     musicSdk.musicContrat?.getMusics().then((value)  {
       musics = value;
       setState(() {

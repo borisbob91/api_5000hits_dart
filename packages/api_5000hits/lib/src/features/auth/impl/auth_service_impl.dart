@@ -8,7 +8,7 @@ import '../exceptions.dart';
 class AuthServiceImpl implements AuthService {
   final AuthRemoteRepository _remoteRepository;
   final AuthLocalRepository _localRepository;
-  String? userToken = null;
+  String? userToken='';
   AuthServiceImpl(this._remoteRepository, this._localRepository);
 
   @override
@@ -62,7 +62,7 @@ class AuthServiceImpl implements AuthService {
     final isAuthenticate = await isAuthenticated();
     return AuthState(
       isAuthenticated: isAuthenticate,
-      token: isAuthenticate ? userToken : "",
+      token: isAuthenticate ? userToken : null,
       userProfile: isAuthenticate ? userProfile : null,
     );
   }
@@ -79,17 +79,23 @@ class AuthServiceImpl implements AuthService {
     if (token == null) return false;
 
     final isExpired = await _localRepository.isTokenExpired();
-    final isValidToken = await _remoteRepository.verifyToken(userToken!);
-    if (isExpired || !isValidToken) {
+
+    final isValidToken = await _remoteRepository.verifyToken(token.access!);
+
+    if (!isExpired && isValidToken){
+      userToken = token.access;
+      return true;
+    }else{
       userToken = null;
-     final refreshed = await refreshToken();
-     if(!refreshed) {
-      _localRepository.deleteToken();
-     }
-      return refreshed;
+      if(token.access!.isNotEmpty){
+        final refreshed = await refreshToken();
+        if(!refreshed) {
+          await _localRepository.deleteToken();
+        }
+        return refreshed;
+      }
+      return false;
     }
-    userToken = token.access ?? "";
-    return true;
   }
 
   Future<Token?> _getLocalToken() async{

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:api_5000hits/src/exceptions/album_exceptions.dart';
 import 'package:api_5000hits/src/utils/api_client.dart';
 import 'package:dio/dio.dart';
 
+import '../../../exceptions/music_exceptions.dart';
 import '../mp3_music.dart';
 import '../mp3_music_remote_repository.dart';
 
@@ -57,7 +59,7 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
       _nextPageUrl = response.data['next'];
       return data.map((json) => Mp3Music.fromJson(json)).toList();
     } catch (e) {
-      throw Exception('Failed to fetch music: $e');
+      throw MusicFetchException('Failed to fetch music: $e');
     }
   }
 
