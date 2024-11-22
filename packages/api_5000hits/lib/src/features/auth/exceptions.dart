@@ -14,6 +14,6 @@ class AuthException implements Exception {
   @override
   String toString() {
     // TODO: implement toString
-    return 'AuthException: $code , detail: $message' ;
+    return 'AuthException: code $code , detail: $message' ;
   }
 }

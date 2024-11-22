@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import '../interfaces.dart';
 
 class Downloader implements DownloaderInterface {
+  //final APiClient _apiClient;
   final Dio _dio;
   final SignatureGeneratorInterface _signatureGenerator;
   final String _baseUrl;

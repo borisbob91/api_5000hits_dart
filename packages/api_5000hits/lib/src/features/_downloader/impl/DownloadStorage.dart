@@ -14,9 +14,10 @@ class DownloadStorage implements DownloadStorageInterface {
   @override
   Future<void> saveDownloadInfo(DownloadInfo info) async {
     final downloadInfoIsar = DownloadInfoIsar.fromDownloadInfo(info);
-    await isar.writeTxn(() async {
+    return await isar.writeTxn(() async {
       await isar.downloadInfoIsars.put(downloadInfoIsar);
     });
+
   }
 
   @override
@@ -58,6 +59,8 @@ class DownloadStorage implements DownloadStorageInterface {
           .slugEqualTo(slug)
           .deleteAll();
     });
+
+
   }
 
   Future<List<DownloadInfo>> getDownloadsByStatus(DownloadStatus status) async {
@@ -74,4 +77,11 @@ class DownloadStorage implements DownloadStorageInterface {
       await isar.downloadInfoIsars.clear();
     });
   }
+
+  @override
+  Future<void> updateDownloadInfo(DownloadInfo info)async{
+    // TODO: methode de mise a jour des info de download
+    UnimplementedError();
+  }
+
 }

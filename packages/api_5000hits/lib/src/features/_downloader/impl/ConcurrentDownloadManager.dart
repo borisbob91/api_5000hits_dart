@@ -26,28 +26,28 @@ class ConcurrentDownloadManager implements ConcurrentDownloadManagerInterface, D
   int get currentConcurrentDownloads => _currentDownloads;
 
   @override
-  Future<void> downloadMusic(String slug, String savePath, Function(DownloadInfo) onProgressUpdate) async {
+  Future<void> downloadMusic(String slug, String savePath, String? coverPath, Function(DownloadInfo) onProgressUpdate) async {
     if (_currentDownloads < _maxConcurrentDownloads) {
       _currentDownloads++;
       try {
-        await _baseManager.downloadMusic(slug, savePath, onProgressUpdate);
+        await _baseManager.downloadMusic(slug, savePath, coverPath, onProgressUpdate);
       } finally {
         _currentDownloads--;
         _processQueue();
       }
     } else {
-      _enqueueDownload(slug, savePath, onProgressUpdate);
+      _enqueueDownload(slug, savePath, coverPath, onProgressUpdate);
     }
   }
 
-  void _enqueueDownload(String slug, String savePath, Function(DownloadInfo) onProgressUpdate) {
-    _downloadQueue.add(_QueuedDownload(slug, savePath, onProgressUpdate));
+  void _enqueueDownload(String slug, String savePath, String? coverPath, Function(DownloadInfo) onProgressUpdate) {
+    _downloadQueue.add(_QueuedDownload(slug, savePath, coverPath, onProgressUpdate));
   }
 
   void _processQueue() {
     while (_currentDownloads < _maxConcurrentDownloads && _downloadQueue.isNotEmpty) {
       final download = _downloadQueue.removeFirst();
-      downloadMusic(download.slug, download.savePath, download.onProgressUpdate);
+      downloadMusic(download.slug, download.savePath,download.coverPath, download.onProgressUpdate);
     }
   }
 
@@ -76,7 +76,8 @@ class ConcurrentDownloadManager implements ConcurrentDownloadManagerInterface, D
 class _QueuedDownload {
   final String slug;
   final String savePath;
+  final String? coverPath;
   final Function(DownloadInfo) onProgressUpdate;
 
-  _QueuedDownload(this.slug, this.savePath, this.onProgressUpdate);
+  _QueuedDownload(this.slug, this.savePath, this.coverPath, this.onProgressUpdate);
 }

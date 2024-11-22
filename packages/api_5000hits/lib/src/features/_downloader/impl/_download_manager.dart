@@ -47,9 +47,9 @@ class _DownloadManager {
     );
   }
 
-  Future<void> addDownload(String slug, String savePath) async {
-    await _queueManager.addToQueue(slug, savePath);
-    final downloadInfo = DownloadInfo(slug, savePath);
+  Future<void> addDownload(String slug, String savePath, String? coverPath) async {
+    await _queueManager.addToQueue(slug, savePath, coverPath);
+    final downloadInfo = DownloadInfo(slug, savePath, coverPath);
     await _storage.saveDownloadInfo(downloadInfo);
   }
 
@@ -167,9 +167,9 @@ class _DownloadManager {
     return _downloader.getDownloadUrl(slug);
   }
 
-  Future<void> downloadFile(String slug, String savePath, Function(int, int) onProgress) async {
+  Future<void> downloadFile(String slug, String savePath, String? coverPath, Function(int, int) onProgress) async {
     final url = _downloader.getDownloadUrl(slug);
-    final downloadInfo = DownloadInfo(slug, savePath);
+    final downloadInfo = DownloadInfo(slug, savePath, coverPath);
     await _storage.saveDownloadInfo(downloadInfo);
 
     try {
@@ -219,5 +219,82 @@ class DownloadManagerFactory {
       isarManager: isarManager,
       maxConcurrentDownloads: maxConcurrentDownloads,
     );
+  }
+}
+
+class DownloadModule {
+  static DownloadModule? _instance;
+  final _DownloadManager _downloadManager;
+
+  DownloadModule._(this._downloadManager);
+
+  static Future<DownloadModule> initialize({
+    required String apiKey,
+    required String baseUrl,
+    required IsarManager isarManager,
+    int maxConcurrentDownloads = 3,
+  }) async {
+    if (_instance == null) {
+      final manager = await DownloadManagerFactory.create(
+        apiKey: apiKey,
+        baseUrl: baseUrl,
+        isarManager: isarManager,
+        maxConcurrentDownloads: maxConcurrentDownloads,
+      );
+      _instance = DownloadModule._(manager);
+    }
+    return _instance!;
+  }
+
+  static DownloadModule get instance {
+    if (_instance == null) {
+      throw Exception('DownloadModule not initialized. Call initialize() first.');
+    }
+    return _instance!;
+  }
+
+  // Méthodes de téléchargement
+  Future<void> downloadFile(String slug, String savePath, String? coverPath, Function(int, int) onProgress) {
+    return _downloadManager.downloadFile(slug, savePath, coverPath, onProgress);
+  }
+
+  Future<void> pauseDownload(String slug) {
+    return _downloadManager.pauseDownload(slug);
+  }
+
+  Future<void> resumeDownload(String slug) {
+    return _downloadManager.resumeDownload(slug);
+  }
+
+  Future<void> cancelDownload(String slug) {
+    return _downloadManager.cancelDownload(slug);
+  }
+
+  // Méthodes d'information
+  Future<DownloadInfo?> getDownloadInfo(String slug) {
+    return _downloadManager.getDownloadInfo(slug);
+  }
+
+  Future<List<DownloadInfo>> getAllDownloads() {
+    return _downloadManager.getAllDownloads();
+  }
+
+  Stream<DownloadInfo> get downloadUpdates => _downloadManager.downloadUpdates;
+
+  List<String> getCurrentQueue() {
+    return _downloadManager.getCurrentQueue();
+  }
+
+  // Gestion de la concurrence
+  Future<void> setMaxConcurrentDownloads(int max) {
+    return _downloadManager.setMaxConcurrentDownloads(max);
+  }
+
+  int get maxConcurrentDownloads => _downloadManager.maxConcurrentDownloads;
+  int get currentConcurrentDownloads => _downloadManager.currentConcurrentDownloads;
+
+  void dispose() {
+    _downloadManager.dispose();
+    _instance = null;
   }
 }

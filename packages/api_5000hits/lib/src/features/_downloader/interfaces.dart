@@ -11,7 +11,7 @@ abstract class DownloaderInterface {
 }
 
 abstract class DownloadManagerInterface {
-  Future<void> downloadMusic(String slug, String savePath, Function(DownloadInfo) onProgressUpdate);
+  Future<void> downloadMusic(String slug, String savePath, String? coverPath, Function(DownloadInfo) onProgressUpdate);
   Future<void> resumeDownload(String slug);
   Future<void> pauseDownload(String slug);
   Future<void> cancelDownload(String slug);
@@ -31,7 +31,7 @@ abstract class ConcurrentDownloadManagerInterface {
 }
 
 abstract class DownloadQueueManagerInterface {
-  Future<void> addToQueue(String slug, String savePath);
+  Future<void> addToQueue(String slug, String savePath, String? coverPath);
   Future<void> removeFromQueue(String slug);
   List<String> getQueue();
   Future<void> processQueue();
@@ -42,5 +42,6 @@ abstract class DownloadStorageInterface {
   Future<DownloadInfo?> getDownloadInfo(String slug);
   Future<List<DownloadInfo>> getAllDownloads();
   Future<void> updateDownloadStatus(String slug, DownloadStatus status);
+  Future<void> updateDownloadInfo(DownloadInfo info);
   Future<void> deleteDownloadInfo(String slug);
 }

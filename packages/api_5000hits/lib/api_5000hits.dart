@@ -8,7 +8,10 @@ import 'package:api_5000hits/src/exceptions/auth_error.dart';
 import 'package:api_5000hits/src/exceptions/error_types.dart';
 import 'package:api_5000hits/src/mixins/mixins.dart';
 
+import 'album_release.dart';
 import 'lyric.dart';
+import 'report.dart';
+import 'src/core/databases/isar_manager.dart';
 import 'src/utils/api_client.dart';
 import 'video.dart';
 
@@ -21,7 +24,9 @@ export 'package:api_5000hits/src/features/artist/mp3_artist.dart' show Mp3Artist
 export 'package:api_5000hits/src/features/auth/auth_state.dart' show AuthState;
 export 'package:api_5000hits/src/exceptions/error_types.dart' show ApiErrorTypes;
 export 'package:api_5000hits/src/exceptions/auth_error.dart' show AuthError;
-
+export 'package:api_5000hits/src/features/releases/mp3_album_release.dart' show Mp3AlbumRelease;
+export 'package:api_5000hits/src/features/releases/mp3_album_release_track.dart' show Mp3AlbumReleaseTrack;
+export 'package:api_5000hits/src/features/report/mp3_report.dart' show Mp3Report;
 part 'api_5000hits_base.dart';
 
 

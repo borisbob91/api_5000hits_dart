@@ -11,9 +11,9 @@ class Mp3DownloadManager implements DownloadManagerInterface {
   Mp3DownloadManager(this._downloader);
 
   @override
-  Future<void> downloadMusic(String slug, String savePath, Function(DownloadInfo) onProgressUpdate) async {
+  Future<void> downloadMusic(String slug, String savePath, String? coverPath, Function(DownloadInfo) onProgressUpdate) async {
     final url = _downloader.getDownloadUrl(slug);
-    final downloadInfo = DownloadInfo(slug, savePath);
+    final downloadInfo = DownloadInfo(slug, savePath, coverPath);
     _downloads[slug] = downloadInfo;
 
     try {

@@ -60,6 +60,9 @@ class AuthRemoteRepositoryImpl implements AuthRemoteRepository {
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
         throw AuthException.fromJson(e.response?.data);
+      } else if (e.type == DioExceptionType.connectionError){
+        // pour une authentification offline utilisé verify expire token
+        return true;
       }
       _apiClient.clearToken();
       return false;

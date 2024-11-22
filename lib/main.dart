@@ -80,8 +80,10 @@ class _MyHomePageState extends State<MyHomePage> {
       isLoading = true;
     });
     // final auth = await musicSdk.auth?.signIn(email: "parkerboris@live.fr", password: "0759188395@Hits");
-    final re = await musicSdk.auth?.getCurrentAuthState();
-    print('auth state test: ${re!.userProfile}');
+    final re = await musicSdk.albumRelease?.getAlbumReleases();
+    print('album release test: ${re}');
+    final detail =await musicSdk.albumRelease?.getAlbumReleaseDetails(13);
+    print('detail: ${detail?.tracks}');
     musicSdk.musicContrat?.getMusics().then((value)  {
       musics = value;
       setState(() {
@@ -92,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
+    final re =  musicSdk.albumRelease!.preloadCache();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

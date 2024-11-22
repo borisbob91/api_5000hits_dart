@@ -17,34 +17,39 @@ const DownloadInfoIsarSchema = CollectionSchema(
   name: r'DownloadInfoIsar',
   id: 7425462381211038166,
   properties: {
-    r'downloadedBytes': PropertySchema(
+    r'coverPath': PropertySchema(
       id: 0,
+      name: r'coverPath',
+      type: IsarType.string,
+    ),
+    r'downloadedBytes': PropertySchema(
+      id: 1,
       name: r'downloadedBytes',
       type: IsarType.long,
     ),
     r'filePath': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'filePath',
       type: IsarType.string,
     ),
     r'progress': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'progress',
       type: IsarType.double,
     ),
     r'slug': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'slug',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'status',
       type: IsarType.byte,
       enumMap: _DownloadInfoIsarstatusEnumValueMap,
     ),
     r'totalBytes': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'totalBytes',
       type: IsarType.long,
     )
@@ -83,6 +88,12 @@ int _downloadInfoIsarEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.coverPath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.filePath.length * 3;
   bytesCount += 3 + object.slug.length * 3;
   return bytesCount;
@@ -94,12 +105,13 @@ void _downloadInfoIsarSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.downloadedBytes);
-  writer.writeString(offsets[1], object.filePath);
-  writer.writeDouble(offsets[2], object.progress);
-  writer.writeString(offsets[3], object.slug);
-  writer.writeByte(offsets[4], object.status.index);
-  writer.writeLong(offsets[5], object.totalBytes);
+  writer.writeString(offsets[0], object.coverPath);
+  writer.writeLong(offsets[1], object.downloadedBytes);
+  writer.writeString(offsets[2], object.filePath);
+  writer.writeDouble(offsets[3], object.progress);
+  writer.writeString(offsets[4], object.slug);
+  writer.writeByte(offsets[5], object.status.index);
+  writer.writeLong(offsets[6], object.totalBytes);
 }
 
 DownloadInfoIsar _downloadInfoIsarDeserialize(
@@ -109,15 +121,16 @@ DownloadInfoIsar _downloadInfoIsarDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DownloadInfoIsar();
-  object.downloadedBytes = reader.readLong(offsets[0]);
-  object.filePath = reader.readString(offsets[1]);
+  object.coverPath = reader.readStringOrNull(offsets[0]);
+  object.downloadedBytes = reader.readLong(offsets[1]);
+  object.filePath = reader.readString(offsets[2]);
   object.id = id;
-  object.progress = reader.readDouble(offsets[2]);
-  object.slug = reader.readString(offsets[3]);
+  object.progress = reader.readDouble(offsets[3]);
+  object.slug = reader.readString(offsets[4]);
   object.status =
-      _DownloadInfoIsarstatusValueEnumMap[reader.readByteOrNull(offsets[4])] ??
+      _DownloadInfoIsarstatusValueEnumMap[reader.readByteOrNull(offsets[5])] ??
           DownloadStatus.notStarted;
-  object.totalBytes = reader.readLong(offsets[5]);
+  object.totalBytes = reader.readLong(offsets[6]);
   return object;
 }
 
@@ -129,18 +142,20 @@ P _downloadInfoIsarDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readDouble(offset)) as P;
-    case 3:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readDouble(offset)) as P;
     case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
       return (_DownloadInfoIsarstatusValueEnumMap[
               reader.readByteOrNull(offset)] ??
           DownloadStatus.notStarted) as P;
-    case 5:
+    case 6:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -358,6 +373,160 @@ extension DownloadInfoIsarQueryWhere
 
 extension DownloadInfoIsarQueryFilter
     on QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QFilterCondition> {
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'coverPath',
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'coverPath',
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'coverPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'coverPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'coverPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'coverPath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'coverPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'coverPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'coverPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'coverPath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'coverPath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
+      coverPathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'coverPath',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterFilterCondition>
       downloadedBytesEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -930,6 +1099,20 @@ extension DownloadInfoIsarQueryLinks
 extension DownloadInfoIsarQuerySortBy
     on QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QSortBy> {
   QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterSortBy>
+      sortByCoverPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'coverPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterSortBy>
+      sortByCoverPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'coverPath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterSortBy>
       sortByDownloadedBytes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'downloadedBytes', Sort.asc);
@@ -1015,6 +1198,20 @@ extension DownloadInfoIsarQuerySortBy
 
 extension DownloadInfoIsarQuerySortThenBy
     on QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QSortThenBy> {
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterSortBy>
+      thenByCoverPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'coverPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterSortBy>
+      thenByCoverPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'coverPath', Sort.desc);
+    });
+  }
+
   QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QAfterSortBy>
       thenByDownloadedBytes() {
     return QueryBuilder.apply(this, (query) {
@@ -1115,6 +1312,13 @@ extension DownloadInfoIsarQuerySortThenBy
 extension DownloadInfoIsarQueryWhereDistinct
     on QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QDistinct> {
   QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QDistinct>
+      distinctByCoverPath({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'coverPath', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, DownloadInfoIsar, QDistinct>
       distinctByDownloadedBytes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'downloadedBytes');
@@ -1162,6 +1366,13 @@ extension DownloadInfoIsarQueryProperty
   QueryBuilder<DownloadInfoIsar, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<DownloadInfoIsar, String?, QQueryOperations>
+      coverPathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'coverPath');
     });
   }
 

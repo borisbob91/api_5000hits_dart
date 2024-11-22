@@ -16,6 +16,7 @@ class ErrorInterceptor extends Interceptor {
       //   final response = await _dio.fetch(err.requestOptions);
       //   return handler.resolve(response);
       // }
+      print("DioError: code 401: unauthenitcaed");
     }
     return super.onError(err, handler);
   }

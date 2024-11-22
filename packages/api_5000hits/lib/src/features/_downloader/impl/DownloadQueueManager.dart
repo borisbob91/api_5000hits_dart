@@ -17,8 +17,8 @@ class DownloadQueueManager implements DownloadQueueManagerInterface {
   Stream<DownloadInfo> get downloadStream => _downloadStreamController.stream;
 
   @override
-  Future<void> addToQueue(String slug, String savePath) async {
-    _queue.add(DownloadInfo(slug, savePath));
+  Future<void> addToQueue(String slug, String savePath, String? coverPath) async {
+    _queue.add(DownloadInfo(slug, savePath, coverPath));
     _checkAndProcessQueue();
   }
 
@@ -48,6 +48,7 @@ class DownloadQueueManager implements DownloadQueueManagerInterface {
             await _downloadManager.downloadMusic(
                 download.slug,
                 download.filePath,
+                download.coverPath,
                     (info) {
                   download.progress = info.progress;
                   download.status = info.status;
@@ -85,7 +86,7 @@ class DownloadQueueManager implements DownloadQueueManagerInterface {
   }
 
   void _notifyListeners(DownloadInfo download) {
-    final downloadInfo = DownloadInfo(download.slug, download.filePath)
+    final downloadInfo = DownloadInfo(download.slug, download.filePath, download.coverPath)
       ..status = download.status
       ..progress = download.progress
       ..totalBytes = download.totalBytes
@@ -104,7 +105,7 @@ class DownloadQueueManager implements DownloadQueueManagerInterface {
   }
 
   List<DownloadInfo> getFailedDownloads() {
-    return _failedQueue.map((download) => DownloadInfo(download.slug, download.filePath)
+    return _failedQueue.map((download) => DownloadInfo(download.slug, download.filePath, download.coverPath)
       ..status = download.status
       ..progress = download.progress
       ..totalBytes = download.totalBytes
@@ -115,7 +116,7 @@ class DownloadQueueManager implements DownloadQueueManagerInterface {
   Future<void> retryFailedDownloads() async {
     while (_failedQueue.isNotEmpty) {
       final failedDownload = _failedQueue.removeFirst();
-      await addToQueue(failedDownload.slug, failedDownload.filePath);
+      await addToQueue(failedDownload.slug, failedDownload.filePath, failedDownload.coverPath);
     }
   }
 

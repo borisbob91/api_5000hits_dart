@@ -12,12 +12,31 @@ class DownloadInfo {
   double progress;
   int totalBytes;
   int downloadedBytes;
+  String? coverPath;
 
-  DownloadInfo(this.slug, this.filePath)
+  DownloadInfo(this.slug, this.filePath, this.coverPath)
       : status = DownloadStatus.notStarted,
         progress = 0.0,
         totalBytes = 0,
         downloadedBytes = 0;
+  // copyWith methode
+  DownloadInfo copyWith({
+    DownloadStatus? status,
+    double? progress,
+    int? totalBytes,
+    int? downloadedBytes,
+    String? coverPath,
+  }) {
+    return DownloadInfo(
+      slug,
+      filePath,
+      coverPath ?? this.coverPath,
+    )
+      ..status = status ?? this.status
+      ..progress = progress ?? this.progress
+      ..totalBytes = totalBytes ?? this.totalBytes
+      ..downloadedBytes = downloadedBytes ?? this.downloadedBytes;
+  }
 }
 
 
@@ -35,6 +54,7 @@ class DownloadInfoIsar  {
   late double progress;
   late int totalBytes;
   late int downloadedBytes;
+  late String? coverPath;
 
   DownloadInfoIsar();
 
@@ -45,10 +65,11 @@ class DownloadInfoIsar  {
     progress = info.progress;
     totalBytes = info.totalBytes;
     downloadedBytes = info.downloadedBytes;
+    coverPath = info.coverPath;
   }
 
   DownloadInfo toDownloadInfo() {
-    return DownloadInfo(slug, filePath)
+    return DownloadInfo(slug, filePath, coverPath)
       ..status = status
       ..progress = progress
       ..totalBytes = totalBytes

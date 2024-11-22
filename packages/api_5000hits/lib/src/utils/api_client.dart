@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 class ApiClient {
   static final ApiClient _instance = ApiClient._internal();
   factory ApiClient() => _instance;
-
+  final Map<String, CancelToken> _cancelTokens = {};
   final _localRepository = AuthLocalRepositoryImpl(IsarManager());
   static const String baseUrl = 'https://api2.5000hits.com';
   String? _token;
@@ -14,7 +14,7 @@ class ApiClient {
   late Dio _dio;
 
   ApiClient._internal() {
-    _dio = Dio(BaseOptions(baseUrl: baseUrl));
+    _dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: Duration(seconds: 30), receiveTimeout: Duration(seconds: 60)));
     _configureDio();
     _initializeToken();
   }
@@ -102,6 +102,23 @@ class ApiClient {
       return await _dio.delete(path);
     } catch (error) {
       throw Exception('Failed to delete data: $error');
+    }
+  }
+
+  Future<Response> download(String path, String savePath, Function(int, int) onProgress) async {
+    final cancelToken = CancelToken();
+    _cancelTokens[path] = cancelToken;
+    try {
+      return await _dio.download(
+        path,
+        savePath,
+        cancelToken: cancelToken,
+        onReceiveProgress: onProgress,
+      );
+    } catch (error) {
+      throw Exception('Failed to download data: $error');
+    } finally {
+      _cancelTokens.remove(path);
     }
   }
 }

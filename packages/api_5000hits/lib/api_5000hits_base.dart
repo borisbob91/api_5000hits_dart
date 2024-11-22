@@ -7,6 +7,8 @@ class MusicSdk  with InitializationMixin{
   late final ArtistContrat _artistContrat;
   late final LyricContrat _lyricContrat;
   late final VideoContrat _videoContrat;
+  late final AlbumReleaseContrat _albumReleaseContrat;
+  late final ReportContract _reportContract;
 
   static String _apiKey = "";
   bool _appInit = false;
@@ -15,6 +17,7 @@ class MusicSdk  with InitializationMixin{
 
   factory MusicSdk() {
     print("*************** SDK factory initialisatin *************************");
+    IsarManager().getIsar();
     return _instance;
   }
 
@@ -25,6 +28,8 @@ class MusicSdk  with InitializationMixin{
       _artistContrat = ArtistContrat();
       _videoContrat = VideoContrat();
       _lyricContrat = LyricContrat();
+      _reportContract = ReportContract();
+      // _albumReleaseContrat = AlbumReleaseContrat();
       return;
   }
 
@@ -79,7 +84,17 @@ class MusicSdk  with InitializationMixin{
     }
     return null;
   }
-
+  AlbumReleaseContrat? get albumRelease{
+    if (checkInitialization()){
+      return _albumReleaseContrat;
+    }
+  }
+  ReportContract? get reportContract {
+    if (checkInitialization()) {
+      return _reportContract;
+    }
+    return null;
+  }
   static MusicSdk get instance {
 
     return _instance;
