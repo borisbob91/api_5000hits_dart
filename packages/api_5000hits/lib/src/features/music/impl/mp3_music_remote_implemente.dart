@@ -67,9 +67,18 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
   Future<Mp3Music> getMusicBySlug(String slug) async {
     try {
       final response = await _apiClient.get('$_route/$slug');
+      print("************music detail runtimeTypes: ${response.data.runtimeType}");
+      if( response.data.runtimeType == String){
+        print("**************can not parce music data because of string");
+        final decodeData = jsonDecode(response.data);
+        print("decodeData: ${decodeData.runtimeType}");
+        print("final decodeData: $decodeData");
+        return Mp3Music.fromJson(decodeData);
+      }
       return Mp3Music.fromJson(response.data);
     } catch (e) {
-      throw Exception('Failed to get music by slug: $e');
+      print('***********failed to get music by slug: $e');
+      throw Exception('Failed to get music by slug: $e from remote repository: trace: getMsuicBySlug');
     }
   }
 

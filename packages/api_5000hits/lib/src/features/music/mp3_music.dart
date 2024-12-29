@@ -179,6 +179,7 @@ class Mp3Music {
   late String? bitrate;
   late String? label;
   late String? filesize;
+  late String? file;
   late int? hits;
   late int? country;
   late DateTime? uploaded;
@@ -206,6 +207,7 @@ class Mp3Music {
     this.bitrate = '',
     this.label = '',
     this.filesize = '',
+    this.file ='',
     this.hits = 0,
     this.country = 0,
     this.uploaded,
@@ -227,6 +229,7 @@ class Mp3Music {
       bitrate: json['bitrate'] ?? '',
       label: json['label'] ?? '',
       filesize: json['filesize'] ?? '',
+      file: json['file'] ?? '',
       hits: json['hits'] ?? 0,
       country: json['country'] ?? 0,
       uploaded: json['uploaded'] != null ? DateTime.parse(json['uploaded']) : null,
@@ -255,6 +258,7 @@ class Mp3Music {
       'bitrate': bitrate,
       'label': label,
       'filesize': filesize,
+      'file': file,
       'hits': hits,
       'country': country,
       'uploaded': uploaded?.toIso8601String(),

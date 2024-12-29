@@ -16,6 +16,7 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
 
   @override
   Future<void> save(Mp3AlbumRelease albumRelease) async {
+    final isar = await isarManager.getIsar();
     await isar.writeTxn(() async {
       // Save tracks first
       if (albumRelease.tracks != null) {
@@ -31,6 +32,7 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
 
   @override
   Future<void> saves(List<Mp3AlbumRelease> albumReleases) async {
+    final isar = await isarManager.getIsar();
     await isar.writeTxn(() async {
       // Save all tracks first
       for (var release in albumReleases) {
@@ -49,6 +51,7 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
     int page = 0,
     int pageSize = DEFAULT_PAGE_SIZE
   }) async {
+    final isar = await isarManager.getIsar();
     return await isar.mp3AlbumReleases
         .where()
         .offset(page * pageSize)
@@ -58,6 +61,7 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
 
   @override
   Future<Mp3AlbumRelease?> getById(int id) async {
+    final isar = await isarManager.getIsar();
     return await isar.mp3AlbumReleases.get(id);
   }
 
@@ -72,10 +76,11 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
 
   @override
   Future<void> delete(Id id) async {
+    final isar = await isarManager.getIsar();
     await isar.writeTxn(() async {
       final release = await isar.mp3AlbumReleases.get(id);
       if (release?.tracks != null) {
-        for (var track in release!.tracks!) {
+        for (var track in release!.tracks) {
           await isar.mp3AlbumReleaseTracks.delete(track.id);
         }
       }
@@ -85,6 +90,7 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
 
   @override
   Future<void> deleteAllAl() async {
+    final isar = await isarManager.getIsar();
     await isar.writeTxn(() async {
       await isar.mp3AlbumReleaseTracks.clear();
       await isar.mp3AlbumReleases.clear();
@@ -96,6 +102,7 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
       String searchTerm,
       {int page = 0, int pageSize = DEFAULT_PAGE_SIZE}
       ) async {
+        final isar = await isarManager.getIsar();
     return await isar.mp3AlbumReleases
         .filter()
         .artistContains(searchTerm, caseSensitive: false)
@@ -106,11 +113,13 @@ class Mp3AlbumReleaseLocalRepositoryImpl implements Mp3AlbumReleaseLocalReposito
 
   @override
   Future<bool> albumExists(int id) async {
+    final isar = await isarManager.getIsar();
     return await isar.mp3AlbumReleases.get(id) != null;
   }
 
   @override
   Future<int> countAll() async {
+    final isar = await isarManager.getIsar();
     return await isar.mp3AlbumReleases.count();
   }
 }

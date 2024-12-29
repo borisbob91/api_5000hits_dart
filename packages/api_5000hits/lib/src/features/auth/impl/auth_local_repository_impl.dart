@@ -8,20 +8,22 @@ class AuthLocalRepositoryImpl implements AuthLocalRepository {
   final IsarManager _isarManager;
 
   AuthLocalRepositoryImpl(this._isarManager){
-    // _isarManager.initialize();
+    _isarManager.initialize();
     //_isarManager.addSchema(TokenSchema);
   }
 
   @override
   Future<void> saveToken(Token token) async {
-    await _isarManager.isar.writeTxn(() async {
-      await _isarManager.isar.tokens.put(token);
+    final isar = await _isarManager.getIsar();
+    await isar.writeTxn(() async {
+      await isar.tokens.put(token);
     });
   }
 
   @override
   Future<Token?> getToken() async {
-    return await _isarManager.isar.tokens.get(1); //  use ID 1 for the token
+    final isar = await _isarManager.getIsar();
+    return await isar.tokens.get(1); //  use ID 1 for the token
   }
 
   @override

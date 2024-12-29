@@ -1,1 +1,28 @@
-TODO: Add your license here.
+MIT License
+
+Copyright (c) 2024 5000hits API
+
+Permission est accordée, gratuitement, à toute personne obtenant une copie de ce logiciel et des fichiers de documentation associés (le "Logiciel"), de traiter le Logiciel sans restriction, y compris, sans limitation, les droits d'utiliser, copier, modifier, fusionner, publier, distribuer, sous-licencier et/ou vendre des copies du Logiciel, et de permettre aux personnes à qui le Logiciel est fourni de le faire, sous réserve des conditions suivantes:
+
+L'avis de copyright ci-dessus et cet avis de permission doivent être inclus dans toutes les copies ou parties substantielles du Logiciel.
+
+LE LOGICIEL EST FOURNI "TEL QUEL", SANS GARANTIE D'AUCUNE SORTE, EXPRESSE OU IMPLICITE, Y COMPRIS, MAIS SANS S'Y LIMITER, LES GARANTIES DE QUALITÉ MARCHANDE, D'ADÉQUATION À UN USAGE PARTICULIER ET DE NON-VIOLATION. EN AUCUN CAS LES AUTEURS OU LES DÉTENTEURS DU COPYRIGHT NE SERONT RESPONSABLES DE TOUTE RÉCLAMATION, DOMMAGES OU AUTRE RESPONSABILITÉ, QUE CE SOIT DANS UNE ACTION CONTRACTUELLE, DÉLICTUELLE OU AUTRE, DÉCOULANT DE, OU EN RELATION AVEC LE LOGICIEL OU L'UTILISATION OU D'AUTRES TRANSACTIONS DANS LE LOGICIEL.
+
+Note importante concernant l'utilisation de l'API:
+
+Bien que ce code source soit sous licence MIT et open source, l'API web associée est un service privé. Pour utiliser l'API:
+
+1. Vous devez être inscrit sur notre plateforme (https://5000hits.com)
+2. Vous devez souscrire à une option développeur pour obtenir les droits d'accès
+3. Un token d'authentification vous sera fourni pour l'utilisation de l'API
+
+Pour toute demande d'accès à l'API ou question, veuillez contacter: contact@5000hits.com
+
+Cette restriction d'accès à l'API n'affecte en rien les droits accordés par la licence MIT sur le code source.
+
+Auteurs:
+- BGK Injecteur SqLi
+- TheNightWalker
+
+
+

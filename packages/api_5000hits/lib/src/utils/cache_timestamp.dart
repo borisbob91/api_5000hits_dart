@@ -15,10 +15,9 @@ class CacheTimestamp {
 class CacheService {
   late final Isar isar;
   static CacheService? _instance;
-
+  final isarManager = IsarManager();
   CacheService._internal() {
-    final isarManager = IsarManager();
-    isar = isarManager.isar;
+    isarManager.initialize();
   }
 
   static CacheService get instance {
@@ -28,6 +27,7 @@ class CacheService {
 
   /// Active le cache en créant ou mettant à jour le timestamp
   Future<void> activateCache() async {
+    final isar = await isarManager.getIsar();
     final timestamp = await isar.cacheTimestamps.where().findFirst();
 
     if (timestamp == null) {
@@ -46,6 +46,7 @@ class CacheService {
 
   /// Vérifie si on doit utiliser le cache
   Future<bool> shouldUseCache() async {
+    
     final timestamp = await isar.cacheTimestamps.where().findFirst();
 
     if (timestamp == null || timestamp.lastUpdate == null) {

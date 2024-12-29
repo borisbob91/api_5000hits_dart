@@ -1,19 +1,21 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 
+import '../../../utils/api_client.dart';
 import '../interfaces.dart';
 
 class Downloader implements DownloaderInterface {
-  //final APiClient _apiClient;
+  final ApiClient _apiClient;
   final Dio _dio;
   final SignatureGeneratorInterface _signatureGenerator;
   final String _baseUrl;
   final Map<String, CancelToken> _cancelTokens = {};
 
-  Downloader(this._signatureGenerator, this._baseUrl) : _dio = Dio() {
-    _dio.options.connectTimeout = Duration(seconds: 30);
-    _dio.options.receiveTimeout = Duration(seconds: 60);
+  Downloader(this._signatureGenerator, this._baseUrl, this._apiClient) : _dio = Dio() {
+    _dio.options.connectTimeout = const Duration(seconds: 30);
+    _dio.options.receiveTimeout = const Duration(seconds: 60);
     _dio.options.baseUrl = _baseUrl;
+   // _apiClient = ApiClient();
   }
 
   @override
@@ -28,6 +30,7 @@ class Downloader implements DownloaderInterface {
         cancelToken: cancelToken,
         onReceiveProgress: onProgress,
       );
+     //  await _apiClient.download(url, savePath, onProgress);
     } finally {
       _cancelTokens.remove(url);
     }

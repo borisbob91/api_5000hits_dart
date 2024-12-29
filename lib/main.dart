@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  MyHomePage(title: '5000Hits APi Test',),
+      home:  const MyHomePage(title: '5000Hits APi Test',),
     );
   }
 }
@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final re = await musicSdk.albumRelease?.getAlbumReleases();
     print('album release test: ${re}');
     final detail =await musicSdk.albumRelease?.getAlbumReleaseDetails(13);
-    print('detail: ${detail?.tracks}');
+     print('detail: ${detail}');
     musicSdk.musicContrat?.getMusics().then((value)  {
       musics = value;
       setState(() {
@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed: () {
+          IconButton(icon: const Icon(Icons.search), onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (builder){
               return AlbumListPage();
             }));
@@ -121,77 +121,77 @@ class _MyHomePageState extends State<MyHomePage> {
                 return AlbumListPage();
               }));
 
-            }, child: Text('Album List')),
+            }, child: const Text('Album List')),
 
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return AlbumListByGenrePage();
               }));
 
-            }, child: Text('Album genre')),
+            }, child: const Text('Album genre')),
 
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return PopulareAlbums();
               }));
 
-            }, child: Text('Album Populars ')),
+            }, child: const Text('Album Populars ')),
 
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return TopDownloadAlbum();
               }));
 
-            }, child: Text('Album top 100')),
+            }, child: const Text('Album top 100')),
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return DownloadsPage();
               }));
 
-            }, child: Text('download page')),
+            }, child: const Text('download page')),
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
-                return AlbumSearchPage();
+                return const AlbumSearchPage();
               }));
 
-            }, child: Text('Album search')),
-            SizedBox(height: 10,),
+            }, child: const Text('Album search')),
+            const SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return MusicListByGenrePage();
               }));
 
-            }, child: Text('Music list with genre')),
+            }, child: const Text('Music list with genre')),
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return PopularMusic();
               }));
 
-            }, child: Text('Popular Music')),
+            }, child: const Text('Popular Music')),
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
-                return MusicSearchPage();
+                return const MusicSearchPage();
               }));
 
-            }, child: Text('Search Music')),
+            }, child: const Text('Search Music')),
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return LyricsListPage();
               }));
 
-            }, child: Text('Lyrics Music')),
+            }, child: const Text('Lyrics Music')),
 
             ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return VideoListScreen();
               }));
 
-            }, child: Text('videos Music')), ElevatedButton(onPressed: (){
+            }, child: const Text('videos Music')), ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (builder){
                 return AuthTestPage();
               }));
 
-            }, child: Text('auth Music')),
+            }, child: const Text('auth Music')),
           ],
       ),),)
     );
@@ -219,7 +219,7 @@ class NewWidget extends StatelessWidget {
                 return ListTile(
                   title: Text('${album.name}'),
                   subtitle: Text('${album.artist}'),
-                  trailing: Icon(Icons.audio_file),
+                  trailing: const Icon(Icons.audio_file),
                   selected: false,
                   onTap: (){
                     Navigator.push(

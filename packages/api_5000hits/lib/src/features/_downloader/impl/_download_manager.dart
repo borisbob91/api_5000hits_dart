@@ -1,4 +1,6 @@
 
+import 'package:api_5000hits/src/utils/api_client.dart';
+
 import '../../../core/databases/isar_manager.dart';
 import '../download_info.dart';
 import '../interfaces.dart';
@@ -33,7 +35,7 @@ class _DownloadManager {
     int maxConcurrentDownloads = 3,
   }) async {
     final signatureGenerator = SignatureGenerator(apiKey);
-    final downloader = Downloader(signatureGenerator, baseUrl);
+    final downloader = Downloader(signatureGenerator, baseUrl, ApiClient());
     final storage = DownloadStorage(isarManager);
     final baseManager = Mp3DownloadManager(downloader);
     final queueManager = DownloadQueueManager(baseManager);
@@ -205,7 +207,6 @@ class _DownloadManager {
 }
 
 
-// Factory pour créer l'instance de DownloadManager
 class DownloadManagerFactory {
   static Future<_DownloadManager> create({
     required String apiKey,

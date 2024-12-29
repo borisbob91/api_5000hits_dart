@@ -29,7 +29,7 @@ class MusicSdk  with InitializationMixin{
       _videoContrat = VideoContrat();
       _lyricContrat = LyricContrat();
       _reportContract = ReportContract();
-      // _albumReleaseContrat = AlbumReleaseContrat();
+      _albumReleaseContrat = AlbumReleaseContrat();
       return;
   }
 

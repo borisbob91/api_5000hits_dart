@@ -134,6 +134,8 @@ class MusicList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      shrinkWrap: true,
       controller: scrollController,
       itemCount: music.length + (isLoading || hasMore ? 1 : 0),
       itemBuilder: (context, index) {

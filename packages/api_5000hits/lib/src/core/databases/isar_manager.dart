@@ -44,8 +44,6 @@ class IsarManager {
       print("Isar is open! ^${_isar!.isOpen}");
       print("IsarManager is already initialized!");
       return _isar!;
-    }else{
-      print("Initial Isar mamanger");
     }
 
     final dir = await getApplicationDocumentsDirectory();
@@ -60,7 +58,7 @@ class IsarManager {
     if (_isar == null) {
        initialize();
        throw StateError('Isar has not been initialized. Call initialize() first form isar manager.');
-      return _isar!;
+      //return _isar!;
     }
 
     return _isar!;

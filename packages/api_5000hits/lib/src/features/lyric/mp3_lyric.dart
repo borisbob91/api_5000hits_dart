@@ -76,7 +76,7 @@ class Mp3Lyric {
     views: json["views"],
     genre: json["genre"],
     artist: json["artist"],
-    text: json["text"] == null ? null : FormatLyricsExtension.formatLyrics(json["text"]),
+    text: formatLyrics(json["text"]),
     added: json["added"] == null ? null : DateTime.parse(json["added"]),
     addedBy: json["added_by"],
     songSlug: json["song_slug"],

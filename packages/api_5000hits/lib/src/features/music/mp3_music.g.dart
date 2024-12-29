@@ -42,53 +42,58 @@ const Mp3MusicSchema = CollectionSchema(
       name: r'duration',
       type: IsarType.string,
     ),
-    r'filesize': PropertySchema(
+    r'file': PropertySchema(
       id: 5,
+      name: r'file',
+      type: IsarType.string,
+    ),
+    r'filesize': PropertySchema(
+      id: 6,
       name: r'filesize',
       type: IsarType.string,
     ),
     r'genre': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'genre',
       type: IsarType.string,
     ),
     r'hits': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'hits',
       type: IsarType.long,
     ),
     r'label': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'label',
       type: IsarType.string,
     ),
     r'slug': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'slug',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'title',
       type: IsarType.string,
     ),
     r'track': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'track',
       type: IsarType.string,
     ),
     r'uploaded': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'uploaded',
       type: IsarType.dateTime,
     ),
     r'uploader': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'uploader',
       type: IsarType.string,
     ),
     r'year': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'year',
       type: IsarType.string,
     )
@@ -193,6 +198,12 @@ int _mp3MusicEstimateSize(
     }
   }
   {
+    final value = object.file;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.filesize;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -244,16 +255,17 @@ void _mp3MusicSerialize(
   writer.writeString(offsets[2], object.bitrate);
   writer.writeLong(offsets[3], object.country);
   writer.writeString(offsets[4], object.duration);
-  writer.writeString(offsets[5], object.filesize);
-  writer.writeString(offsets[6], object.genre);
-  writer.writeLong(offsets[7], object.hits);
-  writer.writeString(offsets[8], object.label);
-  writer.writeString(offsets[9], object.slug);
-  writer.writeString(offsets[10], object.title);
-  writer.writeString(offsets[11], object.track);
-  writer.writeDateTime(offsets[12], object.uploaded);
-  writer.writeString(offsets[13], object.uploader);
-  writer.writeString(offsets[14], object.year);
+  writer.writeString(offsets[5], object.file);
+  writer.writeString(offsets[6], object.filesize);
+  writer.writeString(offsets[7], object.genre);
+  writer.writeLong(offsets[8], object.hits);
+  writer.writeString(offsets[9], object.label);
+  writer.writeString(offsets[10], object.slug);
+  writer.writeString(offsets[11], object.title);
+  writer.writeString(offsets[12], object.track);
+  writer.writeDateTime(offsets[13], object.uploaded);
+  writer.writeString(offsets[14], object.uploader);
+  writer.writeString(offsets[15], object.year);
 }
 
 Mp3Music _mp3MusicDeserialize(
@@ -268,16 +280,17 @@ Mp3Music _mp3MusicDeserialize(
     bitrate: reader.readStringOrNull(offsets[2]),
     country: reader.readLongOrNull(offsets[3]),
     duration: reader.readStringOrNull(offsets[4]),
-    filesize: reader.readStringOrNull(offsets[5]),
-    genre: reader.readStringOrNull(offsets[6]),
-    hits: reader.readLongOrNull(offsets[7]),
-    label: reader.readStringOrNull(offsets[8]),
-    slug: reader.readStringOrNull(offsets[9]) ?? '',
-    title: reader.readStringOrNull(offsets[10]) ?? '',
-    track: reader.readStringOrNull(offsets[11]),
-    uploaded: reader.readDateTimeOrNull(offsets[12]),
-    uploader: reader.readStringOrNull(offsets[13]),
-    year: reader.readStringOrNull(offsets[14]),
+    file: reader.readStringOrNull(offsets[5]),
+    filesize: reader.readStringOrNull(offsets[6]),
+    genre: reader.readStringOrNull(offsets[7]),
+    hits: reader.readLongOrNull(offsets[8]),
+    label: reader.readStringOrNull(offsets[9]),
+    slug: reader.readStringOrNull(offsets[10]) ?? '',
+    title: reader.readStringOrNull(offsets[11]) ?? '',
+    track: reader.readStringOrNull(offsets[12]),
+    uploaded: reader.readDateTimeOrNull(offsets[13]),
+    uploader: reader.readStringOrNull(offsets[14]),
+    year: reader.readStringOrNull(offsets[15]),
   );
   object.id = id;
   return object;
@@ -305,20 +318,22 @@ P _mp3MusicDeserializeProp<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readLongOrNull(offset)) as P;
-    case 8:
       return (reader.readStringOrNull(offset)) as P;
+    case 8:
+      return (reader.readLongOrNull(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 12:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 13:
       return (reader.readStringOrNull(offset)) as P;
+    case 13:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 14:
+      return (reader.readStringOrNull(offset)) as P;
+    case 15:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1696,6 +1711,152 @@ extension Mp3MusicQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'duration',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'file',
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'file',
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'file',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'file',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'file',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'file',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'file',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'file',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'file',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'file',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'file',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterFilterCondition> fileIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'file',
         value: '',
       ));
     });
@@ -3108,6 +3269,18 @@ extension Mp3MusicQuerySortBy on QueryBuilder<Mp3Music, Mp3Music, QSortBy> {
     });
   }
 
+  QueryBuilder<Mp3Music, Mp3Music, QAfterSortBy> sortByFile() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'file', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterSortBy> sortByFileDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'file', Sort.desc);
+    });
+  }
+
   QueryBuilder<Mp3Music, Mp3Music, QAfterSortBy> sortByFilesize() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'filesize', Sort.asc);
@@ -3291,6 +3464,18 @@ extension Mp3MusicQuerySortThenBy
     });
   }
 
+  QueryBuilder<Mp3Music, Mp3Music, QAfterSortBy> thenByFile() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'file', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Mp3Music, Mp3Music, QAfterSortBy> thenByFileDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'file', Sort.desc);
+    });
+  }
+
   QueryBuilder<Mp3Music, Mp3Music, QAfterSortBy> thenByFilesize() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'filesize', Sort.asc);
@@ -3460,6 +3645,13 @@ extension Mp3MusicQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Mp3Music, Mp3Music, QDistinct> distinctByFile(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'file', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Mp3Music, Mp3Music, QDistinct> distinctByFilesize(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -3564,6 +3756,12 @@ extension Mp3MusicQueryProperty
   QueryBuilder<Mp3Music, String?, QQueryOperations> durationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'duration');
+    });
+  }
+
+  QueryBuilder<Mp3Music, String?, QQueryOperations> fileProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'file');
     });
   }
 

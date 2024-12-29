@@ -12,6 +12,7 @@ class CropPlusApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CropPlus',
+
       theme: ThemeData(
         primaryColor: const Color(0xFF1B5E20),
         colorScheme: ColorScheme.fromSeed(

@@ -20,6 +20,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "asn1lib",
+      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/asn1lib-1.5.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "async",
       "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0",
       "packageUri": "lib/",
@@ -144,6 +150,12 @@
       "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.4.1",
       "packageUri": "lib/",
       "languageVersion": "2.15"
+    },
+    {
+      "name": "encrypt",
+      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/encrypt-5.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "fake_async",
@@ -386,6 +398,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "pointycastle",
+      "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/pointycastle-3.9.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "pool",
       "rootUri": "file:///C:/Users/KOUACOUKOUAKOUGhisla/AppData/Local/Pub/Cache/hosted/pub.dev/pool-1.5.1",
       "packageUri": "lib/",
@@ -554,7 +572,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-11-18T17:27:00.292273Z",
+  "generated": "2024-12-27T15:33:15.930370Z",
   "generator": "pub",
   "generatorVersion": "3.4.4",
   "flutterRoot": "file:///C:/flutter",
