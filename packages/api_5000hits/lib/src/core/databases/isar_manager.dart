@@ -10,8 +10,10 @@ import 'package:api_5000hits/src/features/releases/mp3_album_release_track.dart'
 import 'package:api_5000hits/src/features/video/mp3_video.dart';
 import 'package:api_5000hits/src/utils/cache_timestamp.dart';
 import 'package:isar/isar.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
+final logger = Logger();
 class IsarManager {
   //static final IsarManager _instance = IsarManager._internal();
   static  IsarManager? _instance;
@@ -41,8 +43,8 @@ class IsarManager {
 
   Future<Isar> initialize() async {
     if (_isar !=null){
-      print("Isar is open! ^${_isar!.isOpen}");
-      print("IsarManager is already initialized!");
+      logger.i("Isar is open! ^${_isar!.isOpen}");
+      logger.i("IsarManager is already initialized!");
       return _isar!;
     }
 
@@ -57,6 +59,7 @@ class IsarManager {
   Isar get isar {
     if (_isar == null) {
        initialize();
+       logger.w("Isar has not been initialized. Call initialize() first form isar manager.");
        throw StateError('Isar has not been initialized. Call initialize() first form isar manager.');
       //return _isar!;
     }

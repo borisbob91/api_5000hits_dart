@@ -1,5 +1,6 @@
 part of 'api_5000hits.dart';
 
+final logger = Logger();
 class MusicSdk  with InitializationMixin{
   late final AlbumContrat _albumContrat;
   late final MusicContrat _musicContrat;
@@ -16,7 +17,7 @@ class MusicSdk  with InitializationMixin{
   static final MusicSdk _instance = MusicSdk._internal();
 
   factory MusicSdk() {
-    print("*************** SDK factory initialisatin *************************");
+    logger.i('*********SDK factory initialisatin *************************');
     IsarManager().getIsar();
     return _instance;
   }

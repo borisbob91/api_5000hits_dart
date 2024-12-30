@@ -1,5 +1,7 @@
 library api_5000hits;
 
+import 'package:logger/logger.dart';
+
 import 'package:api_5000hits/album.dart';
 import 'package:api_5000hits/artist.dart';
 import 'package:api_5000hits/auth.dart';

@@ -2,6 +2,9 @@ import 'package:api_5000hits/src/core/databases/isar_manager.dart';
 import 'package:api_5000hits/src/features/auth/impl/auth_local_repository_impl.dart';
 import 'package:api_5000hits/src/utils/dio_interceptors.dart';
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 class ApiClient {
   static final ApiClient _instance = ApiClient._internal();
@@ -14,7 +17,10 @@ class ApiClient {
   late Dio _dio;
 
   ApiClient._internal() {
-    _dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: Duration(seconds: 30), receiveTimeout: Duration(seconds: 60)));
+    _dio = Dio(BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: Duration(seconds: 30),
+        receiveTimeout: Duration(seconds: 60)));
     _configureDio();
     _initializeToken();
   }
@@ -50,12 +56,11 @@ class ApiClient {
     _dio.options.headers.remove('Authorization');
   }
 
-  Future<Response> get(String path, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    void Function(int, int)? onReceiveProgress
-  }) async {
+  Future<Response> get(String path,
+      {Map<String, dynamic>? queryParameters,
+      Options? options,
+      CancelToken? cancelToken,
+      void Function(int, int)? onReceiveProgress}) async {
     try {
       return await _dio.get(
         path,
@@ -64,12 +69,22 @@ class ApiClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
-    } catch (error) {
-      throw Exception('Failed to get data: $error');
+    } on DioException catch (error) {
+      throw DioHttpError(
+        error.message!,
+        error.response?.statusCode,
+        error.stackTrace.toString(),
+      );
+    } catch (error, stackTrace) {
+      logger.f('Fatal error: $error');
+      logger.f('Stacktrace: $stackTrace');
+      throw Exception('Fatal error in get  method error: $error trace: $stackTrace');
     }
   }
 
-  Future<Response> post(String path, dynamic data, {
+  Future<Response> post(
+    String path,
+    dynamic data, {
     Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
@@ -84,6 +99,12 @@ class ApiClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
+    }on DioException catch (error) {
+      throw DioHttpError(
+        error.message!,
+        error.response?.statusCode,
+        error.stackTrace.toString(),
+      );
     } catch (error) {
       throw Exception('Failed to post data: $error');
     }
@@ -92,6 +113,12 @@ class ApiClient {
   Future<Response> put(String path, dynamic data) async {
     try {
       return await _dio.put(path, data: data);
+    }on DioException catch (error) {
+      throw DioHttpError(
+        error.message!,
+        error.response?.statusCode,
+        error.stackTrace.toString(),
+      );
     } catch (error) {
       throw Exception('Failed to put data: $error');
     }
@@ -100,12 +127,19 @@ class ApiClient {
   Future<Response> delete(String path) async {
     try {
       return await _dio.delete(path);
+    }on DioException catch (error) {
+      throw DioHttpError(
+        error.message!,
+        error.response?.statusCode,
+        error.stackTrace.toString(),
+      );
     } catch (error) {
       throw Exception('Failed to delete data: $error');
     }
   }
 
-  Future<Response> download(String path, String savePath, Function(int, int) onProgress) async {
+  Future<Response> download(
+      String path, String savePath, Function(int, int) onProgress) async {
     final cancelToken = CancelToken();
     _cancelTokens[path] = cancelToken;
     try {
@@ -115,8 +149,19 @@ class ApiClient {
         cancelToken: cancelToken,
         onReceiveProgress: onProgress,
       );
-    } catch (error) {
-      throw Exception('Failed to download data: $error');
+    }on DioException catch (error) {
+      throw DioHttpError(
+        error.message!,
+        error.response?.statusCode,
+        error.stackTrace.toString(),
+      );
+    } catch (error, stackTrace) {
+     throw  DioHttpError(
+      error.toString(),
+      0,
+      stackTrace.toString(),
+    );
+      // throw Exception('Failed to download data: $error');
     } finally {
       _cancelTokens.remove(path);
     }
