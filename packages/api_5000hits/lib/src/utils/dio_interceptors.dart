@@ -33,7 +33,7 @@ class ErrorInterceptor extends Interceptor {
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode ?? 0;
-    logger.e('DioHttpError: ${err.response?.statusCode}');
+    logger.e('DioHttpError statusCode: $statusCode');
     if (err.response?.statusCode == 401) {
       // final refreshed = false;
       // if (refreshed) {
@@ -54,6 +54,8 @@ class ErrorInterceptor extends Interceptor {
          
     } else if (err.response?.statusCode == 503) {
       logger.e("DioError: code 503: service unavailable");
+    }else {
+      logger.f("DioError: code ${err.response?.statusCode}: unknown error, check your connectivity !");
     }
     return super.onError(err, handler);
   }
