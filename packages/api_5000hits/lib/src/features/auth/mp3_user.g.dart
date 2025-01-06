@@ -58,7 +58,21 @@ const Mp3UserSchema = CollectionSchema(
   deserialize: _mp3UserDeserialize,
   deserializeProp: _mp3UserDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'email': IndexSchema(
+      id: -26095440403582047,
+      name: r'email',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'email',
+          type: IndexType.value,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _mp3UserGetId,
@@ -178,10 +192,72 @@ void _mp3UserAttach(IsarCollection<dynamic> col, Id id, Mp3User object) {
   object.id = id;
 }
 
+extension Mp3UserByIndex on IsarCollection<Mp3User> {
+  Future<Mp3User?> getByEmail(String? email) {
+    return getByIndex(r'email', [email]);
+  }
+
+  Mp3User? getByEmailSync(String? email) {
+    return getByIndexSync(r'email', [email]);
+  }
+
+  Future<bool> deleteByEmail(String? email) {
+    return deleteByIndex(r'email', [email]);
+  }
+
+  bool deleteByEmailSync(String? email) {
+    return deleteByIndexSync(r'email', [email]);
+  }
+
+  Future<List<Mp3User?>> getAllByEmail(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
+    return getAllByIndex(r'email', values);
+  }
+
+  List<Mp3User?> getAllByEmailSync(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'email', values);
+  }
+
+  Future<int> deleteAllByEmail(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'email', values);
+  }
+
+  int deleteAllByEmailSync(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'email', values);
+  }
+
+  Future<Id> putByEmail(Mp3User object) {
+    return putByIndex(r'email', object);
+  }
+
+  Id putByEmailSync(Mp3User object, {bool saveLinks = true}) {
+    return putByIndexSync(r'email', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByEmail(List<Mp3User> objects) {
+    return putAllByIndex(r'email', objects);
+  }
+
+  List<Id> putAllByEmailSync(List<Mp3User> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'email', objects, saveLinks: saveLinks);
+  }
+}
+
 extension Mp3UserQueryWhereSort on QueryBuilder<Mp3User, Mp3User, QWhere> {
   QueryBuilder<Mp3User, Mp3User, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhere> anyEmail() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'email'),
+      );
     });
   }
 }
@@ -249,6 +325,162 @@ extension Mp3UserQueryWhere on QueryBuilder<Mp3User, Mp3User, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'email',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'email',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailEqualTo(
+      String? email) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'email',
+        value: [email],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailNotEqualTo(
+      String? email) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'email',
+              lower: [],
+              upper: [email],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'email',
+              lower: [email],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'email',
+              lower: [email],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'email',
+              lower: [],
+              upper: [email],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailGreaterThan(
+    String? email, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'email',
+        lower: [email],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailLessThan(
+    String? email, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'email',
+        lower: [],
+        upper: [email],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailBetween(
+    String? lowerEmail,
+    String? upperEmail, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'email',
+        lower: [lowerEmail],
+        includeLower: includeLower,
+        upper: [upperEmail],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailStartsWith(
+      String EmailPrefix) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'email',
+        lower: [EmailPrefix],
+        upper: ['$EmailPrefix\u{FFFFF}'],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'email',
+        value: [''],
+      ));
+    });
+  }
+
+  QueryBuilder<Mp3User, Mp3User, QAfterWhereClause> emailIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'email',
+              upper: [''],
+            ))
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'email',
+              lower: [''],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'email',
+              lower: [''],
+            ))
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'email',
+              upper: [''],
+            ));
+      }
     });
   }
 }

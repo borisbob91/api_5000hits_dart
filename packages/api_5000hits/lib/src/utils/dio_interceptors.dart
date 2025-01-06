@@ -34,7 +34,10 @@ class ErrorInterceptor extends Interceptor {
       DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode ?? 0;
     logger.e('DioHttpError statusCode: $statusCode');
-    if (err.response?.statusCode == 401) {
+
+    if (statusCode == 404) {
+      logger.e("DioError: code 404: not found: ${err.requestOptions.uri}");
+    } else if (err.response?.statusCode == 401) {
       // final refreshed = false;
       // if (refreshed) {
       //   err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
@@ -42,20 +45,17 @@ class ErrorInterceptor extends Interceptor {
       //   return handler.resolve(response);
       // }
       logger.e("DioError: code 401: unauthenitcaed");
- 
     } else if (err.response?.statusCode == 403) {
       logger.e("DioError: code 403: forbidden");
- 
     } else if (err.response?.statusCode == 404) {
       logger.e("DioError: code 404: not found");
- 
     } else if (err.response?.statusCode == 500) {
       logger.e("DioError: code 500: internal server error");
-         
     } else if (err.response?.statusCode == 503) {
       logger.e("DioError: code 503: service unavailable");
-    }else {
-      logger.f("DioError: code ${err.response?.statusCode}: unknown error, check your connectivity !");
+    } else {
+      logger.f(
+          "DioError: code ${err.response?.statusCode}: unknown error, check your connectivity !");
     }
     return super.onError(err, handler);
   }

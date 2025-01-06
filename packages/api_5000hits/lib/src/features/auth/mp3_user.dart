@@ -8,6 +8,7 @@ class Mp3User {
   Id? id = Isar.autoIncrement;
   final String? username;
   final String? password;
+  @Index(unique: true, replace: true, type: IndexType.value)
   final String? email;
   final String? fullName;
   final DateTime? registered;

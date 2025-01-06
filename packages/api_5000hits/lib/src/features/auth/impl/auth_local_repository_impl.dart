@@ -1,9 +1,13 @@
 
+import 'package:isar/isar.dart';
+import 'package:logger/logger.dart';
+
 import '../../../core/databases/isar_manager.dart';
 import '../auth_local_repository.dart';
 import '../auth_model.dart';
 import '../mp3_user.dart';
 
+final logger = Logger();
 class AuthLocalRepositoryImpl implements AuthLocalRepository {
   final IsarManager _isarManager;
 
@@ -15,7 +19,11 @@ class AuthLocalRepositoryImpl implements AuthLocalRepository {
   @override
   Future<void> saveToken(Token token) async {
     final isar = await _isarManager.getIsar();
+    final count = await isar.tokens.count();
     await isar.writeTxn(() async {
+      if (count>0){
+        token.id=1;
+      }
       await isar.tokens.put(token);
     });
   }
@@ -29,7 +37,7 @@ class AuthLocalRepositoryImpl implements AuthLocalRepository {
   @override
   Future<void> deleteToken() async {
     await _isarManager.isar.writeTxn(() async {
-      await _isarManager.isar.tokens.delete(1);
+      await _isarManager.isar.tokens.clear();
     });
   }
 
@@ -48,7 +56,7 @@ class AuthLocalRepositoryImpl implements AuthLocalRepository {
   @override
   Future<void> deleteUserProfile() async {
     await _isarManager.isar.writeTxn(() async {
-      await _isarManager.isar.mp3Users.delete(1);
+      await _isarManager.isar.mp3Users.clear();
     });
   }
   

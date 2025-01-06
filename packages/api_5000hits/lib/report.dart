@@ -1,14 +1,17 @@
+import 'package:logger/logger.dart';
+
 import '/src/utils/api_client.dart';
 
 import 'src/features/report/impl/mp3_report_remote_repository_impl.dart';
 import 'src/features/report/impl/mp3_report_service_impl.dart';
 
+final logger = Logger();
 class ReportContract extends Mp3ReportServiceImpl {
   static ReportContract? _instance;
 
   factory ReportContract() {
     if (_instance == null) {
-      print('report contract init');
+      logger.i('report contract init');
       final apiClient = ApiClient();
       final remoteRepo = Mp3ReportRemoteRepositoryImpl(apiClient: apiClient);
       _instance = ReportContract._internal(remoteRepository: remoteRepo);

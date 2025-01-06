@@ -41,3 +41,6 @@ from the package authors, and more.
 
 build runner
 `flutter pub run build_runner build --delete-conflicting-outputs`
+
+git tag v1.0.0   
+`git push origin v1.0.0`
