@@ -76,7 +76,7 @@ class Mp3Lyric {
     views: json["views"] ?? 0,
     genre: json["genre"]?? 'unknown genre',
     artist: json["artist"]?? 'unknown artist',
-    text: formatLyrics(json["text"]),
+    text: nettoyerTexte(json["text"]),
     added: json["added"] == null ? null : DateTime.parse(json["added"]),
     addedBy: json["added_by"]?? 'unknown added by',
     songSlug: json["song_slug"]?? 'unknown song slug',

@@ -45,10 +45,10 @@ class Mp3LyricRemoteRepositoryImpl implements Mp3LyricRemoteRepository {
   @override
   Future<Mp3Lyric> getLyricBySlug(String slug) async {
     try {
-      final response = await _apiClient.get('$_baseUrl/$slug');
+      final response = await _apiClient.get('$_baseUrl$slug');
       return Mp3Lyric.fromJson(json.decode(response.data));
     } catch (e) {
-      throw LyricNotFoundException('Lyric not found for SLUG $slug: $e');
+      throw LyricNotFoundException('Lyric not found for slug $slug: $e');
     }
   }
 

@@ -29,7 +29,13 @@ String formatLyrics(String? encodedLyrics) {
   }
   return '';
 }
-
+String nettoyerTexte(String texteAvecBalises) {
+  // Parse le texte HTML
+  final document = parse(texteAvecBalises);
+  // Extrait le texte sans balises
+  final texteNettoye = document.body?.text ?? '';
+  return texteNettoye.trim(); // Supprime les espaces inutiles au début et à la fin
+}
 
 extension FormatLyricsExtension on String {
   static String formatLyrics(String? encodedLyrics) {
