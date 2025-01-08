@@ -3,7 +3,6 @@ import '../download_info.dart';
 import '../interfaces.dart';
 
 
-
 class DownloadStorage implements DownloadStorageInterface {
   final IsarManager _isarManager;
 

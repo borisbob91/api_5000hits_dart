@@ -1,10 +1,14 @@
 import 'package:html/parser.dart' show parse;
+import 'package:logger/logger.dart';
+final logger = Logger();
 
 String formatLyrics(String? encodedLyrics) {
   if (encodedLyrics == null || encodedLyrics.isEmpty) {
       return '';
     }
-  print("lyric text formatting......");
+  logger.i("lyric text formatting......");
+
+  try{
   // Décoder le texte encodé
   final decodedLyrics = Uri.decodeComponent(encodedLyrics);
 
@@ -16,8 +20,14 @@ String formatLyrics(String? encodedLyrics) {
 
   // Formater le texte
   final formattedLyrics = paragraphs.join('\n\n');
-
+  logger.i('lyric text formatted done !');
   return formattedLyrics;
+
+  }
+  catch(e){
+    logger.e("error while formatting lyrics: $e");
+  }
+  return '';
 }
 
 

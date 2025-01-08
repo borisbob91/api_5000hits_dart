@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:api_5000hits/src/features/lyric/mp3_lyric.dart';
 import 'package:api_5000hits/src/utils/api_client.dart';
 import 'package:api_5000hits/src/exceptions/lyric_exceptions.dart';
+import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 
 import '../mp3_lyric_remote_repository.dart';
-
+final logger = Logger();
 class Mp3LyricRemoteRepositoryImpl implements Mp3LyricRemoteRepository {
   final ApiClient _apiClient;
   final String _baseUrl = '/api/v1/lyrics2/';
@@ -32,9 +34,10 @@ class Mp3LyricRemoteRepositoryImpl implements Mp3LyricRemoteRepository {
         'page': page,
       });
 
-      final List<dynamic> data = json.decode(response.data)['results'];
-      return data.map((json) => Mp3Lyric.fromJson(json)).toList();
+      return await _decodeResponse(response);
     } catch (e) {
+      logger.f("fatal error while mapping lyric data");
+      logger.e(e);
       throw LyricFetchException('Failed to fetch lyrics: $e');
     }
   }
@@ -47,5 +50,11 @@ class Mp3LyricRemoteRepositoryImpl implements Mp3LyricRemoteRepository {
     } catch (e) {
       throw LyricNotFoundException('Lyric not found for SLUG $slug: $e');
     }
+  }
+
+    Future<List<Mp3Lyric>> _decodeResponse(Response<dynamic> response) async {
+    final responseData = jsonDecode(response.toString());
+    final List<dynamic> data = responseData['results'];
+    return data.map((json) => Mp3Lyric.fromJson(json)).toList();
   }
 }

@@ -71,15 +71,15 @@ class Mp3Lyric {
 
   factory Mp3Lyric.fromJson(Map<String, dynamic> json) => Mp3Lyric(
     id: json["id"],
-    title: json["title"],
-    cover: json["cover"],
-    views: json["views"],
-    genre: json["genre"],
-    artist: json["artist"],
+    title: json["title"]?? 'unknown title',
+    cover: json["cover"]?? 'unknown cover',
+    views: json["views"] ?? 0,
+    genre: json["genre"]?? 'unknown genre',
+    artist: json["artist"]?? 'unknown artist',
     text: formatLyrics(json["text"]),
     added: json["added"] == null ? null : DateTime.parse(json["added"]),
-    addedBy: json["added_by"],
-    songSlug: json["song_slug"],
+    addedBy: json["added_by"]?? 'unknown added by',
+    songSlug: json["song_slug"]?? 'unknown song slug',
   );
 
   Map<String, dynamic> toJson() => {
