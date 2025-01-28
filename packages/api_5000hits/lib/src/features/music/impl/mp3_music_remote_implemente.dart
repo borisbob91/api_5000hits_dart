@@ -3,15 +3,17 @@ import 'dart:convert';
 import 'package:api_5000hits/src/exceptions/album_exceptions.dart';
 import 'package:api_5000hits/src/utils/api_client.dart';
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 
 import '../../../exceptions/music_exceptions.dart';
 import '../mp3_music.dart';
 import '../mp3_music_remote_repository.dart';
 
+final logger = Logger();
 
 class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
   late final ApiClient _apiClient;
-  final  String _route = '/api/v1/musics';
+  final String _route = '/api/v1/musics';
   String? _nextPageUrl;
 
   Mp3MusicRemoteRepositoryImplement(this._apiClient);
@@ -63,22 +65,37 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
     }
   }
 
+  // @override
+  // Future<Mp3Music> getMusicBySlug(String slug) async {
+  //   try {
+  //     final response = await _apiClient.get('$_route/$slug');
+  //      final responseData = jsonDecode(response.toString());
+  //     return Mp3Music.fromJson(response.data as Map<String, dynamic> );
+  //   } catch (e) {
+  //     logger.e('e: $e');
+  //     throw Exception('Failed to get music by slug: $e from remote repository: trace: getMsuicBySlug');
+  //   }
+  // }
   @override
   Future<Mp3Music> getMusicBySlug(String slug) async {
     try {
       final response = await _apiClient.get('$_route/$slug');
-      print("************music detail runtimeTypes: ${response.data.runtimeType}");
-      if( response.data.runtimeType == String){
-        print("**************can not parce music data because of string");
-        final decodeData = jsonDecode(response.data);
-        print("decodeData: ${decodeData.runtimeType}");
-        print("final decodeData: $decodeData");
-        return Mp3Music.fromJson(decodeData);
+
+      // Vérifiez si la réponse est déjà un objet JSON
+      final responseData =
+          response.data is String ? jsonDecode(response.data) : response.data;
+
+      // Assurez-vous que responseData est bien un Map<String, dynamic>
+      if (responseData is Map<String, dynamic>) {
+        return Mp3Music.fromJson(responseData);
+      } else {
+        throw Exception(
+            'Invalid response format: expected Map<String, dynamic>');
       }
-      return Mp3Music.fromJson(response.data);
     } catch (e) {
-      print('***********failed to get music by slug: $e');
-      throw Exception('Failed to get music by slug: $e from remote repository: trace: getMsuicBySlug');
+      logger.e('e: $e');
+      throw Exception(
+          'Failed to get music by slug: $e from remote repository: trace: getMusicBySlug');
     }
   }
 
@@ -98,34 +115,42 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
   }
 
   @override
-  Future<List<Mp3Music>> searchMusic(String query, {int limit = 20, int offset = 0}) async {
+  Future<List<Mp3Music>> searchMusic(String query,
+      {int limit = 20, int offset = 0}) async {
     return fetchMusic(search: query, limit: limit, offset: offset);
   }
 
   @override
-  Future<List<Mp3Music>> getRecentMusic({int limit = 20, int offset = 0}) async {
-    return fetchMusic(sortBy: 'uploaded', sortDesc: true, limit: limit, offset: offset);
+  Future<List<Mp3Music>> getRecentMusic(
+      {int limit = 20, int offset = 0}) async {
+    return fetchMusic(
+        sortBy: 'uploaded', sortDesc: true, limit: limit, offset: offset);
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByArtist(String artist, {int limit = 20, int offset = 0}) async {
+  Future<List<Mp3Music>> getMusicByArtist(String artist,
+      {int limit = 20, int offset = 0}) async {
     return fetchMusic(artist: artist, limit: limit, offset: offset);
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByAlbum(String album, {int limit = 20, int offset = 0}) async {
+  Future<List<Mp3Music>> getMusicByAlbum(String album,
+      {int limit = 20, int offset = 0}) async {
     return fetchMusic(album: album, limit: limit, offset: offset);
   }
 
   @override
-  Future<List<Mp3Music>> getMusicByGenre(String genre, {int limit = 20, int offset = 0}) async {
+  Future<List<Mp3Music>> getMusicByGenre(String genre,
+      {int limit = 20, int offset = 0}) async {
     return fetchMusic(genre: genre, limit: limit, offset: offset);
   }
 
   @override
-  Future<List<Mp3Music>> getSimilarMusic(String musicSlug, {int limit = 20, page=1}) async {
+  Future<List<Mp3Music>> getSimilarMusic(String musicSlug,
+      {int limit = 20, page = 1}) async {
     try {
-      final response = await _apiClient.get('$_route/$musicSlug/simulars', queryParameters: {'limit': limit, 'page':page});
+      final response = await _apiClient.get('$_route/$musicSlug/simulars',
+          queryParameters: {'limit': limit, 'page': page});
       final List<dynamic> data = response.data['results'];
       return data.map((json) => Mp3Music.fromJson(json)).toList();
     } catch (e) {
@@ -134,19 +159,23 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
   }
 
   @override
-  Future<List<Mp3Music>> getPopularMusic({ int limit = 20, int page = 0}) async {
+  Future<List<Mp3Music>> getPopularMusic({int limit = 20, int page = 0}) async {
     try {
-      final response = await _apiClient.get('$_route/populars/', queryParameters: {'limit': limit, 'page':page});
+      final response = await _apiClient.get('$_route/populars/',
+          queryParameters: {'limit': limit, 'page': page});
       final List<dynamic> data = response.data['results'];
       return data.map((json) => Mp3Music.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Failed to get similar music: $e');
     }
   }
+
   @override
-  Future<List<Mp3Music>> getMusicForArtistBySlug({required String musicSlug, int limit = 20, int page = 0}) async{
+  Future<List<Mp3Music>> getMusicForArtistBySlug(
+      {required String musicSlug, int limit = 20, int page = 0}) async {
     try {
-      final response = await _apiClient.get('$_route/$musicSlug/artist', queryParameters: {'limit': limit, 'page':page});
+      final response = await _apiClient.get('$_route/$musicSlug/artist',
+          queryParameters: {'limit': limit, 'page': page});
       final List<dynamic> data = response.data['results'];
       return data.map((json) => Mp3Music.fromJson(json)).toList();
     } catch (e) {
@@ -165,13 +194,14 @@ class Mp3MusicRemoteRepositoryImplement implements Mp3MusicRemoteRepository {
     print('results: $data');
     var nextPage = respnseData['next'];
     var count = respnseData['count'];
-    return  data.map((json) => Mp3Music.fromJson(json)).toList();
+    return data.map((json) => Mp3Music.fromJson(json)).toList();
   }
-  
+
   Map<String, dynamic> _extractOffsetAndLimit(String url) {
     Uri uri = Uri.parse(url);
     int offset = int.tryParse(uri.queryParameters['offset'] ?? '') ?? 0;
-    int limit = int.tryParse(uri.queryParameters['limit'] ?? '') ?? 100; // Valeur par défaut si limit n'est pas spécifié
+    int limit = int.tryParse(uri.queryParameters['limit'] ?? '') ??
+        100; // Valeur par défaut si limit n'est pas spécifié
     return {'offset': offset, 'limit': limit};
   }
 }

@@ -36,7 +36,6 @@ class Mp3LyricRemoteRepositoryImpl implements Mp3LyricRemoteRepository {
 
       return await _decodeResponse(response);
     } catch (e) {
-      logger.f("fatal error while mapping lyric data");
       logger.e(e);
       throw LyricFetchException('Failed to fetch lyrics: $e');
     }
@@ -46,8 +45,10 @@ class Mp3LyricRemoteRepositoryImpl implements Mp3LyricRemoteRepository {
   Future<Mp3Lyric> getLyricBySlug(String slug) async {
     try {
       final response = await _apiClient.get('$_baseUrl$slug');
-      return Mp3Lyric.fromJson(json.decode(response.data));
+     
+      return Mp3Lyric.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
+      logger.e(e);
       throw LyricNotFoundException('Lyric not found for slug $slug: $e');
     }
   }

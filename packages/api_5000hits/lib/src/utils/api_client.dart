@@ -70,7 +70,7 @@ class ApiClient {
         onReceiveProgress: onReceiveProgress,
       );
     } on DioException catch (error) {
-      throw DioHttpError(
+      throw MusicSdkHttpError(
         error.message!,
         error.response?.statusCode,
         error.stackTrace.toString(),
@@ -100,7 +100,7 @@ class ApiClient {
         onReceiveProgress: onReceiveProgress,
       );
     }on DioException catch (error) {
-      throw DioHttpError(
+      throw MusicSdkHttpError(
         error.message!,
         error.response?.statusCode,
         error.stackTrace.toString(),
@@ -114,7 +114,7 @@ class ApiClient {
     try {
       return await _dio.put(path, data: data);
     }on DioException catch (error) {
-      throw DioHttpError(
+      throw MusicSdkHttpError(
         error.message!,
         error.response?.statusCode,
         error.stackTrace.toString(),
@@ -128,7 +128,7 @@ class ApiClient {
     try {
       return await _dio.delete(path);
     }on DioException catch (error) {
-      throw DioHttpError(
+      throw MusicSdkHttpError(
         error.message!,
         error.response?.statusCode,
         error.stackTrace.toString(),
@@ -150,13 +150,13 @@ class ApiClient {
         onReceiveProgress: onProgress,
       );
     }on DioException catch (error) {
-      throw DioHttpError(
+      throw MusicSdkHttpError(
         error.message!,
         error.response?.statusCode,
         error.stackTrace.toString(),
       );
     } catch (error, stackTrace) {
-     throw  DioHttpError(
+     throw  MusicSdkHttpError(
       error.toString(),
       0,
       stackTrace.toString(),

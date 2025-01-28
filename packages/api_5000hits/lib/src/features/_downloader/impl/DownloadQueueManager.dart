@@ -64,7 +64,7 @@ class DownloadQueueManager implements DownloadQueueManagerInterface {
             break;
           } catch (e) {
             retryCount++;
-            print('Erreur lors du téléchargement de ${download.slug}: $e (Tentative $retryCount/$maxRetries)');
+            ('Erreur lors du téléchargement de ${download.slug}: $e (Tentative $retryCount/$maxRetries)');
 
             if (retryCount >= maxRetries) {
               download.status = DownloadStatus.failed;

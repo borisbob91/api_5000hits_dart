@@ -99,7 +99,8 @@ class Mp3AlbumRemoteRepositoryImplemente implements Mp3RemoteRepositoryInterface
       });
       return await _decodeResponse(response);
 
-    } catch (error) {
+    } 
+    catch (error) {
       throw AlbumFetchException(' $error');
     }
   }

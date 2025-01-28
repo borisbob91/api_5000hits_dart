@@ -20,8 +20,9 @@ class Mp3AlbumServiceImpl implements Mp3AlbumServiceInterface {
       // await _localRepository.saveAlbums(remoteAlbums);
       return remoteAlbums;
     } catch (e) {
-      return await _localRepository.getAllAlbums(
-          page: page, pageSize: pageSize);
+      // return await _localRepository.getAllAlbums(
+      //     page: page, pageSize: pageSize);
+       throw AlbumFetchException(e.toString());
     }
   }
 
@@ -34,8 +35,9 @@ class Mp3AlbumServiceImpl implements Mp3AlbumServiceInterface {
       // await _localRepository.saveAlbums(remoteResults);
       return remoteResults;
     } catch (e) {
-      return await _localRepository.searchAlbums(searchTerm,
-          page: page, pageSize: pageSize);
+      throw AlbumFetchException(e.toString());
+      // return await _localRepository.searchAlbums(searchTerm,
+      //     page: page, pageSize: pageSize);
     }
   }
 
@@ -45,9 +47,8 @@ class Mp3AlbumServiceImpl implements Mp3AlbumServiceInterface {
     try {
       List<Mp3Album> remoteAlbums = await _remoteRepository.fetchPopularsAlbums(page: page, pageSize: pageSize);
        return remoteAlbums;
-    } catch (e) {
-      return await _localRepository.getPopularAlbums(
-          page: page, pageSize: pageSize);
+    } catch (e, t) {
+      throw AlbumFetchException(e.toString());
     }
   }
 
@@ -61,8 +62,7 @@ class Mp3AlbumServiceImpl implements Mp3AlbumServiceInterface {
       print('genre result: $remoteAlbums');
       return remoteAlbums;
     } catch (e) {
-      return await _localRepository.getAlbumsByGenre(genre,
-          page: page, pageSize: pageSize);
+      throw AlbumReadException(e.toString());
     }
   }
 
@@ -79,7 +79,7 @@ class Mp3AlbumServiceImpl implements Mp3AlbumServiceInterface {
       print("-************artist albums $remoteAlbums");
       return remoteAlbums;
     } catch (e) {
-      return [];
+      throw AlbumFetchException("fetch album By Artist failed: $e");
       // return await _localRepository.getAlbumsByArtist(artist, page: page, pageSize: pageSize);
     }
   }

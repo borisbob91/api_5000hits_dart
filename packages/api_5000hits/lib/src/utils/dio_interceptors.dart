@@ -5,13 +5,13 @@ import 'package:logger/logger.dart';
 import '../features/auth/impl/auth_local_repository_impl.dart';
 // dio http custom exceptions class
 
-class DioHttpError implements Exception {
+class MusicSdkHttpError implements Exception {
   final String? error;
   final int? statusCode;
   final String? trace;
 
   // Constructor avec initialisation des champs
-  DioHttpError(this.error, this.statusCode, [this.trace]);
+  MusicSdkHttpError(this.error, this.statusCode, [this.trace]);
 
   // Getter pour accéder au code de statut
   int get status => statusCode ?? 0;
@@ -21,7 +21,7 @@ class DioHttpError implements Exception {
 
   @override
   String toString() =>
-      'DioHttpError: $message, statusCode: $statusCode, trace: $trace';
+      'MusicSdkHttpError: $message, statusCode: $statusCode, trace: $trace';
 }
 
 final logger = Logger();
@@ -33,7 +33,7 @@ class ErrorInterceptor extends Interceptor {
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode ?? 0;
-    logger.e('DioHttpError statusCode: $statusCode');
+    logger.e('MusicSdkHttpError statusCode: $statusCode');
 
     if (statusCode == 404) {
       logger.e("DioError: code 404: not found: ${err.requestOptions.uri}");

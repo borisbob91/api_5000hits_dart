@@ -44,4 +44,6 @@ abstract class DownloadStorageInterface {
   Future<void> updateDownloadStatus(String slug, DownloadStatus status);
   Future<void> updateDownloadInfo(DownloadInfo info);
   Future<void> deleteDownloadInfo(String slug);
+  Future<void> exist(String fileUrl);
+ 
 }

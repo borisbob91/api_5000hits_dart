@@ -29,6 +29,12 @@ export 'package:api_5000hits/src/exceptions/auth_error.dart' show AuthError;
 export 'package:api_5000hits/src/features/releases/mp3_album_release.dart' show Mp3AlbumRelease;
 export 'package:api_5000hits/src/features/releases/mp3_album_release_track.dart' show Mp3AlbumReleaseTrack;
 export 'package:api_5000hits/src/features/report/mp3_report.dart' show Mp3Report;
+export 'package:api_5000hits/src/utils/dio_interceptors.dart' show MusicSdkHttpError;
+export 'package:api_5000hits/src/exceptions/album_exceptions.dart' show AlbumFetchException, AlbumReadException;
+export 'package:api_5000hits/src/exceptions/artist_exceptions.dart';
+export 'package:api_5000hits/src/exceptions/music_exceptions.dart';
+export 'package:api_5000hits/src/exceptions/auth_error.dart';
+export 'package:api_5000hits/src/exceptions/lyric_exceptions.dart';
 part 'api_5000hits_base.dart';
 
 
